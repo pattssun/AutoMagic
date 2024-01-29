@@ -1,4 +1,4 @@
-def generate_captions(text, max_length=20):
+def generate_captions(text, max_length=25):
     """
     Splits a given text into caption-sized chunks.
     

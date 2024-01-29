@@ -15,7 +15,7 @@ def create_text_clip(text, start_time, end_time, fontsize=24):
     """
     return TextClip(text, fontsize=fontsize, color='white', size=(800, 200)).set_position("center").set_start(start_time).set_end(end_time)
 
-def assemble_video(title_text, body_captions, background_video_path, output_filename):
+def assemble_video(title_text, body_text, background_video_path, output_filename):
     """
     Assembles the video from various components.
 
@@ -27,6 +27,10 @@ def assemble_video(title_text, body_captions, background_video_path, output_file
     """
     # Load the background video
     background_clip = VideoFileClip(background_video_path)
+
+    # Generate audio for title and body text
+    text_to_speech(title_text, "output/title_audio.mp3")
+    text_to_speech(body_text, "output/body_audio.mp3")
 
     # Create a clip for the title
     title_audio = AudioFileClip("output/title_audio.mp3")
@@ -62,6 +66,6 @@ def assemble_video(title_text, body_captions, background_video_path, output_file
 
 # Example usage
 if __name__ == "__main__":
-    title_text = "Your Title Text Here"
-    body_text = "Your lengthy body text here that will be narrated continuously."
+    title_text = "I’ve stolen countless bottles of liquor from my parents"
+    body_text = "Im 18 years old, and have always been that studious, rule following daughter my parents expected me to be. A while ago, my parents bought a new house, and we are still in the process of moving. My parents and brothers live in the new house, and I remained in the old. After a month of temporarily living alone, I had a random urge to see if they left their alcohol in the alcohol cabinet. To my surprise I ended up giving into the urge of wanting to experience what being drunk was like that same night. A week later, I did it again, and the cycle started. All my friends had moved away to university, and they were getting drunk too. I felt like I was just being a typical teenager because of that."
     assemble_video(title_text, body_text, "resources/background_videos/minecraft.mp4", "output/final_video.mp4")
