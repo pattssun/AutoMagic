@@ -22,6 +22,6 @@ def generate_captions(text, max_length=20):
 
     return captions
 
-# Test the function
-body_captions = generate_captions("Your lengthy body text here that will be split into smaller chunks suitable for video captions.")
-print("Body Captions:", body_captions)
+# # Test the function
+# body_captions = generate_captions("Your lengthy body text here that will be split into smaller chunks suitable for video captions.")
+# print("Body Captions:", body_captions)
