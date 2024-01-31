@@ -1,8 +1,11 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, TextClip, concatenate_audioclips
 from text_to_speech import text_to_speech
-from caption_generator import generate_captions
+from caption_generator import generate_captions, generate_audio_for_each_caption
 
 def crop_to_916(clip):
+    """
+    Crops a clip to a 9:16 aspect ratio.
+    """
     original_width, original_height = clip.size
     target_aspect_ratio = 9.0 / 16.0
     # Calculate the target width to maintain a 9:16 aspect ratio based on the clip's height
@@ -18,32 +21,15 @@ def crop_to_916(clip):
 def create_text_clip(text, start_time, end_time, fontsize=24, font='resources/fonts/Product Sans Regular.ttf', color='white'):
     """
     Creates a moviepy TextClip object for a given piece of text.
-    
-    :param text: The text to be displayed.
-    :param start_time: Start time for the text clip.
-    :param end_time: End time for the text clip.
-    :param fontsize: Font size of the text.
-    :param font: Font used for the text.
-    :param color: Color of the text.
-    :return: A TextClip object.
     """
     return TextClip(text, fontsize=fontsize, font=font, color=color, size=(800, 200)).set_position("center").set_start(start_time).set_end(end_time)
 
 def assemble_video(title_text, body_text, background_video_path, output_filename):
     """
     Assembles the video from various components.
-
-    :param title_text: The title text.
-    :param body_text: The entire body text.
-    :param body_captions: List of body text captions.
-    :param background_video_path: Path to the background video.
-    :param output_filename: Filename for the output video.
     """
-    # Load the background video
-    background_clip = VideoFileClip(background_video_path)
-
-    # Crop the background video to a 9:16 aspect ratio
-    background_clip = crop_to_916(background_clip)
+    # Load the background video and crop to a 9:16 aspect ratio
+    background_clip = crop_to_916(VideoFileClip(background_video_path))
 
     # Generate audio for title and body text
     text_to_speech(title_text, "output/title_audio.mp3")
@@ -58,6 +44,9 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
 
     # Chunk the body text into captions
     body_captions = generate_captions(body_text)
+
+    # Generate captions for the body text, assuming 3 words per caption
+    body_captions = generate_captions(body_text, words_per_caption=3)
 
     # Initialize list to hold all clips
     clips = [title_clip]
