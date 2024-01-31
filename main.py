@@ -2,18 +2,19 @@ from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, Tex
 from text_to_speech import text_to_speech
 from caption_generator import generate_captions
 
-def create_text_clip(text, start_time, end_time, fontsize=24):
+def create_text_clip(text, start_time, end_time, fontsize=24, font='resources/fonts/Product Sans Regular.ttf', color='white'):
     """
     Creates a moviepy TextClip object for a given piece of text.
-
+    
     :param text: The text to be displayed.
     :param start_time: Start time for the text clip.
     :param end_time: End time for the text clip.
     :param fontsize: Font size of the text.
-    :param pos: Position of the text in the clip.
+    :param font: Font used for the text.
+    :param color: Color of the text.
     :return: A TextClip object.
     """
-    return TextClip(text, fontsize=fontsize, color='white', size=(800, 200)).set_position("center").set_start(start_time).set_end(end_time)
+    return TextClip(text, fontsize=fontsize, font=font, color=color, size=(800, 200)).set_position("center").set_start(start_time).set_end(end_time)
 
 def assemble_video(title_text, body_text, background_video_path, output_filename):
     """
