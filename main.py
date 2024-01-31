@@ -1,6 +1,6 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, TextClip, concatenate_audioclips
-from src.audio_generation.text_to_speech import text_to_speech
-from src.video_processing.caption_generator import generate_captions
+from text_to_speech import text_to_speech
+from caption_generator import generate_captions
 
 def create_text_clip(text, start_time, end_time, fontsize=24):
     """
