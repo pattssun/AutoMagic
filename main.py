@@ -2,6 +2,19 @@ from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, Tex
 from text_to_speech import text_to_speech
 from caption_generator import generate_captions
 
+def crop_to_916(clip):
+    original_width, original_height = clip.size
+    target_aspect_ratio = 9.0 / 16.0
+    # Calculate the target width to maintain a 9:16 aspect ratio based on the clip's height
+    target_width = int(original_height * target_aspect_ratio)
+    
+    # Calculate the amount to crop from the sides to achieve the target width
+    crop_amount_per_side = (original_width - target_width) / 2
+    
+    # Crop the clip
+    cropped_clip = clip.crop(x1=crop_amount_per_side, y1=0, x2=original_width - crop_amount_per_side, y2=original_height)
+    return cropped_clip
+
 def create_text_clip(text, start_time, end_time, fontsize=24, font='resources/fonts/Product Sans Regular.ttf', color='white'):
     """
     Creates a moviepy TextClip object for a given piece of text.
@@ -29,6 +42,9 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
     # Load the background video
     background_clip = VideoFileClip(background_video_path)
 
+    # Crop the background video to a 9:16 aspect ratio
+    background_clip = crop_to_916(background_clip)
+
     # Generate audio for title and body text
     text_to_speech(title_text, "output/title_audio.mp3")
     text_to_speech(body_text, "output/body_audio.mp3")
@@ -46,12 +62,12 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
     # Initialize list to hold all clips
     clips = [title_clip]
 
-    # Calculate start and end times for each caption
+    # Calculate start and end times for each body caption chunk
     start_time = title_audio.duration
     for caption in body_captions:
         caption_duration = body_audio.duration / len(body_captions)
         end_time = start_time + caption_duration
-        text_clip = create_text_clip(caption, start_time, end_time)
+        text_clip = create_text_clip(caption, start_time, end_time, fontsize=34)
         clips.append(text_clip)
         start_time = end_time
 
