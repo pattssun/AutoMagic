@@ -1,5 +1,6 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, TextClip, concatenate_audioclips
 from gtts import gTTS
+import re
 
 def crop_to_916(clip):
     """
@@ -52,13 +53,13 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
     # Create a clip for the title
-    text_to_speech(title_text, "output/title_audio.mp3")
-    title_audio = AudioFileClip("output/title_audio.mp3")
+    text_to_speech(title_text, "resources/audio_files/title_audio.mp3")
+    title_audio = AudioFileClip("resources/audio_files/title_audio.mp3")
     title_clip = create_text_clip(title_text, 0, title_audio.duration).set_audio(title_audio)
 
     # Create continuous audio for the body
-    text_to_speech(body_text, "output/body_audio.mp3")
-    body_audio = AudioFileClip("output/body_audio.mp3")
+    text_to_speech(body_text, "resources/audio_files/body_audio.mp3")
+    body_audio = AudioFileClip("resources/audio_files/body_audio.mp3")
 
     # Generate captions for the body text, assuming 3 words per caption
     body_captions = generate_captions(body_text, words_per_caption=3)
