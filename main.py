@@ -1,6 +1,5 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, TextClip, concatenate_audioclips
-from text_to_speech import text_to_speech
-from caption_generator import generate_captions, generate_audio_for_each_caption
+from gtts import gTTS
 
 def crop_to_916(clip):
     """
@@ -18,11 +17,32 @@ def crop_to_916(clip):
     cropped_clip = clip.crop(x1=crop_amount_per_side, y1=0, x2=original_width - crop_amount_per_side, y2=original_height)
     return cropped_clip
 
+def text_to_speech(text, output_filename):
+    """
+    Converts text to an audio file using gTTS.
+    """
+    tts = gTTS(text)
+    tts.save(output_filename)
+
 def create_text_clip(text, start_time, end_time, fontsize=24, font='resources/fonts/Product Sans Regular.ttf', color='white'):
     """
     Creates a moviepy TextClip object for a given piece of text.
     """
     return TextClip(text, fontsize=fontsize, font=font, color=color, size=(800, 200)).set_position("center").set_start(start_time).set_end(end_time)
+
+def generate_captions(text, words_per_caption=3):
+    """
+    Splits a given text into chunks of a specified number of words.
+    """
+    words = text.split()
+    captions = []
+    
+    # Iterate through words and chunk them into groups of `words_per_caption`
+    for i in range(0, len(words), words_per_caption):
+        caption = " ".join(words[i:i+words_per_caption])
+        captions.append(caption)
+
+    return captions
 
 def assemble_video(title_text, body_text, background_video_path, output_filename):
     """
@@ -31,19 +51,14 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
     # Load the background video and crop to a 9:16 aspect ratio
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
-    # Generate audio for title and body text
-    text_to_speech(title_text, "output/title_audio.mp3")
-    text_to_speech(body_text, "output/body_audio.mp3")
-
     # Create a clip for the title
+    text_to_speech(title_text, "output/title_audio.mp3")
     title_audio = AudioFileClip("output/title_audio.mp3")
     title_clip = create_text_clip(title_text, 0, title_audio.duration).set_audio(title_audio)
 
     # Create continuous audio for the body
+    text_to_speech(body_text, "output/body_audio.mp3")
     body_audio = AudioFileClip("output/body_audio.mp3")
-
-    # Chunk the body text into captions
-    body_captions = generate_captions(body_text)
 
     # Generate captions for the body text, assuming 3 words per caption
     body_captions = generate_captions(body_text, words_per_caption=3)
