@@ -1,6 +1,7 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, TextClip, concatenate_audioclips
 from gtts import gTTS
-import re
+from afaligner import align
+import os
 
 def crop_to_916(clip):
     """
