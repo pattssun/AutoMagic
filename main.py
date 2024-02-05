@@ -1,7 +1,5 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, TextClip, concatenate_audioclips
 from gtts import gTTS
-from afaligner import align
-import os
 
 def crop_to_916(clip):
     """
@@ -62,7 +60,7 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
     text_to_speech(body_text, "resources/audio_files/body_audio.mp3")
     body_audio = AudioFileClip("resources/audio_files/body_audio.mp3")
 
-    # Generate captions for the body text, assuming 3 words per caption
+    # Generate captions for the body text
     body_captions = generate_captions(body_text, words_per_caption=3)
 
     # Initialize list to hold all clips
@@ -71,7 +69,7 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
     # Calculate start and end times for each body caption chunk
     start_time = title_audio.duration
     for caption in body_captions:
-        caption_duration = body_audio.duration / len(body_captions)
+        caption_duration = body_audio.duration * sum(c.isalpha() for c in caption) / sum(c.isalpha() for c in body_text)
         end_time = start_time + caption_duration
         text_clip = create_text_clip(caption, start_time, end_time, fontsize=34)
         clips.append(text_clip)
