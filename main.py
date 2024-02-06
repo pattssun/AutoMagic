@@ -1,5 +1,5 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, concatenate_audioclips
-from src.video_processing import crop_to_916, create_text_clip
+from src.video_processing import crop_to_916, create_text_clip_for_body, create_text_clip_for_title
 from src.audio_processing import text_to_speech, generate_captions
 
 def assemble_video(title_text, body_text, background_video_path, output_filename):
@@ -12,7 +12,7 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
     # Create a clip for the title
     text_to_speech(title_text, "resources/audio_files/title_audio.mp3")
     title_audio = AudioFileClip("resources/audio_files/title_audio.mp3")
-    title_clip = create_text_clip(title_text, 0, title_audio.duration).set_audio(title_audio)
+    title_clip = create_text_clip_for_title(title_text, start_time=0, end_time=title_audio.duration).set_audio(title_audio)
 
     # Create continuous audio for the body
     text_to_speech(body_text, "resources/audio_files/body_audio.mp3")
@@ -26,7 +26,7 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
     for caption in body_captions:
         start_time = caption['start'] + title_audio.duration
         end_time = caption['end'] + title_audio.duration
-        text_clip = create_text_clip(caption['text'], start_time, end_time, fontsize=34)
+        text_clip = create_text_clip_for_body(caption['text'], start_time, end_time, fontsize=34)
         clips.append(text_clip)
 
     # Combine the title audio and body audio
