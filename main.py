@@ -1,5 +1,26 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, TextClip, concatenate_audioclips
 from gtts import gTTS
+import whisper_timestamped as whisper
+import re
+
+audio = whisper.load_audio('resources/audio_files/body_audio.mp3')
+model = whisper.load_model("base")
+result = whisper.transcribe(model, audio, language="en")
+
+def extract_word_timings(json_data):
+    word_timings = []
+
+    # Iterate through each segment in the JSON data
+    for segment in json_data["segments"]:
+        # Iterate through each word in the segment
+        for word_info in segment["words"]:
+            word_timings.append({
+                "text": word_info["text"],
+                "start": word_info["start"],
+                "end": word_info["end"]
+            })
+
+    return word_timings
 
 def crop_to_916(clip):
     """
@@ -30,11 +51,12 @@ def create_text_clip(text, start_time, end_time, fontsize=24, font='resources/fo
     """
     return TextClip(text, fontsize=fontsize, font=font, color=color, size=(800, 200)).set_position("center").set_start(start_time).set_end(end_time)
 
-def generate_captions(text, words_per_caption=3):
+# DELETE ?????
+def generate_captions(text, words_per_caption=1):
     """
     Splits a given text into chunks of a specified number of words.
     """
-    words = text.split()
+    words = re.split(r"[ ,.!+']+", text)
     captions = []
     
     # Iterate through words and chunk them into groups of `words_per_caption`
@@ -60,20 +82,20 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
     text_to_speech(body_text, "resources/audio_files/body_audio.mp3")
     body_audio = AudioFileClip("resources/audio_files/body_audio.mp3")
 
+    # DELETE ?????
     # Generate captions for the body text
-    body_captions = generate_captions(body_text, words_per_caption=3)
+    body_captions = generate_captions(body_text, words_per_caption=1)
 
     # Initialize list to hold all clips
     clips = [title_clip]
 
     # Calculate start and end times for each body caption chunk
-    start_time = title_audio.duration
-    for caption in body_captions:
-        caption_duration = body_audio.duration * sum(c.isalpha() for c in caption) / sum(c.isalpha() for c in body_text)
-        end_time = start_time + caption_duration
-        text_clip = create_text_clip(caption, start_time, end_time, fontsize=34)
+    word_timings = extract_word_timings(result) 
+    for caption in word_timings:
+        start_time = caption['start'] + title_audio.duration
+        end_time = caption['end'] + title_audio.duration
+        text_clip = create_text_clip(caption['text'], start_time, end_time, fontsize=34)
         clips.append(text_clip)
-        start_time = end_time
 
     # Combine the title audio and body audio
     combined_audio = concatenate_audioclips([title_audio, body_audio])
@@ -88,5 +110,6 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
 # Example usage
 if __name__ == "__main__":
     title_text = "Finally, I got my first full-time offer"
-    body_text = "After applying for almost 1000+ SDE positions, I finally got an offer from Bambu Lab!!! This is a unicorn company that makes 3D printers, and I think it has great potential. Do you guys have any knowledge about their products? Some advice plz."
+    body_text = "After applying for almost 1000 SDE positions, I finally got an offer from Bambu Lab!!! This is a unicorn company that makes 3D printers, and I think it has great potential. Do you guys have any knowledge about their products? Some advice plz."
     assemble_video(title_text, body_text, "resources/background_videos/minecraft.mp4", "output/final_video.mp4")
+    # print(generate_captions(body_text, words_per_caption=1))
