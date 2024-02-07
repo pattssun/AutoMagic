@@ -1,4 +1,4 @@
-from moviepy.editor import TextClip, ColorClip, CompositeVideoClip
+from moviepy.editor import TextClip, ColorClip, CompositeVideoClip, VideoFileClip
 
 def crop_to_916(clip):
     """
