@@ -41,6 +41,6 @@ def assemble_video(title_text, body_text, background_video_path, output_filename
 
 # Example usage
 if __name__ == "__main__":
-    title_text = "Finally, I got my first full-time offer"
+    title_text = "Tired of regular job boards? I am building a site featuring only the jobs that can change your life"
     body_text = "After applying for almost 1000+ SDE positions, I finally got an offer from Bambu Lab!!! This is a unicorn company that makes 3D printers, and I think it has great potential. Do you guys have any knowledge about their products? Some advice plz."
     assemble_video(title_text, body_text, "resources/background_videos/minecraft.mp4", "output/final_video.mp4")
