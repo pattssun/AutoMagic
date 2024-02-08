@@ -1,8 +1,9 @@
-from moviepy.editor import TextClip, ColorClip, CompositeVideoClip, VideoFileClip
+from moviepy.editor import TextClip, ColorClip, CompositeVideoClip
+from PIL import Image
 
 def crop_to_916(clip):
     """
-    Crops a clip to a 9:16 aspect ratio, centered, maintaining original height.
+    Crops a clip to a 9:16 aspect ratio and centered from its sides.
     """
     original_width, original_height = clip.size
     # Calculate the target width based on the original height to maintain a 9:16 aspect ratio
@@ -16,9 +17,13 @@ def crop_to_916(clip):
 
     # Crop the clip centered from its sides
     cropped_clip = clip.crop(x1=crop_amount_per_side, y1=0, x2=original_width - crop_amount_per_side, y2=original_height)
+    
+    # Resize the clip to 1080x1920
+    cropped_clip = cropped_clip.resize((1080, 1920))
+
     return cropped_clip
 
-def create_text_clip_for_title(text, start_time, end_time, fontsize=24, font='Arial', color='black', bg_color=(255, 255, 255)):
+def create_text_clip_for_title(text, start_time, end_time, clip_size, fontsize=50, font='Arial', color='black', bg_color=(255, 255, 255)):
     """
     Creates a moviepy TextClip object for a title text in a dynamic box.
     The box has a fixed width of 780 pixels and is centered within a 1080x1920 canvas
@@ -29,22 +34,22 @@ def create_text_clip_for_title(text, start_time, end_time, fontsize=24, font='Ar
     # Calculate text size to determine box size
     text_width, text_height = text_clip.size
     box_height = text_height 
-    box_width = 780  # Fixed width
+    box_width = int(clip_size[0] * 0.72)  # 72% of the background clip's width (780/1080 = 0.72)
 
     # Create a box ColorClip
-    box_clip = ColorClip(size=(box_width, box_height), color=bg_color, duration=end_time-start_time)
+    box_clip = ColorClip(size=(box_width, box_height), color=bg_color, duration=end_time-start_time).set_position('center')
 
     # Position the text clip in the center of the box clip
     text_clip = text_clip.set_position('center').set_duration(end_time-start_time)
 
     # Composite the text clip over the background clip
-    composite_clip = CompositeVideoClip([box_clip, text_clip], size=(box_width, box_height))
+    composite_clip = CompositeVideoClip([box_clip, text_clip], size=clip_size)
     composite_clip = composite_clip.set_position('center').set_start(start_time)
 
     return composite_clip
 
-def create_text_clip_for_body(text, start_time, end_time, fontsize=24, font='Arial', color='white'):
+def create_text_clip_for_body(text, start_time, end_time, clip_size, fontsize=75, font='Arial', color='white'):
     """
     Creates a moviepy TextClip object for a body text.
     """
-    return TextClip(text, fontsize=fontsize, font=font, color=color, size=(800, 200)).set_position("center").set_start(start_time).set_end(end_time)
+    return TextClip(text, fontsize=fontsize, font=font, color=color, size=clip_size).set_position("center").set_start(start_time).set_end(end_time)
