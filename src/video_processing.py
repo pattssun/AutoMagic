@@ -48,8 +48,8 @@ def create_text_clip_for_title(text, start_time, end_time, clip_size, fontsize=5
 
     return composite_clip
 
-def create_text_clip_for_body(text, start_time, end_time, clip_size, fontsize=75, font='Arial', color='white'):
+def create_text_clip_for_body(text, start_time, end_time, clip_size, font='resources/fonts/komika_poster.ttf', fontsize=65, color='white', stroke_color='black', stroke_width=5):
     """
     Creates a moviepy TextClip object for a body text.
     """
-    return TextClip(text, fontsize=fontsize, font=font, color=color, size=clip_size).set_position("center").set_start(start_time).set_end(end_time)
+    return TextClip(text, font=font, fontsize=fontsize, color=color, size=clip_size, stroke_color=stroke_color, stroke_width=stroke_width).set_position("center").set_start(start_time).set_end(end_time)
