@@ -87,3 +87,6 @@ def generate_captions(audio_path):
             }) 
 
     return captions
+
+# test text_to_speech
+text_to_speech("I am a test", "resources/audio_files/test.mp3")

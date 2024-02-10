@@ -54,8 +54,8 @@ def assemble_video(title_text, body_text, background_video_path, title_image_pat
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
     # Convert the title text to speech and speed it up
-    text_to_speech(title_text, "resources/audio_files/title_audio.mp3") # Un-comment when shipping!!!!!!!!
-    speed_up_mp3("resources/audio_files/title_audio.mp3", "resources/audio_files/title_audio_faster.mp3", 1.25) # Un-comment when shipping!!!!!!!!
+    # text_to_speech(title_text, "resources/audio_files/title_audio.mp3") # Un-comment when shipping!!!!!!!!
+    # speed_up_mp3("resources/audio_files/title_audio.mp3", "resources/audio_files/title_audio_faster.mp3", 1.25) # Un-comment when shipping!!!!!!!!
     title_audio = AudioFileClip("resources/audio_files/title_audio_faster.mp3")
 
     # Load the pre-rendered title image as a clip
@@ -67,8 +67,8 @@ def assemble_video(title_text, body_text, background_video_path, title_image_pat
     pause_video_clip = ColorClip(size=title_image_clip.size, color=(0,0,0,0), duration=pause_duration).set_audio(pause_audio_clip)
 
     # Convert the body text to speech and speed it up
-    text_to_speech(body_text, "resources/audio_files/body_audio.mp3") # Un-comment when shipping!!!!!!!!
-    speed_up_mp3("resources/audio_files/body_audio.mp3", "resources/audio_files/body_audio_faster.mp3", 1.25) # Un-comment when shipping!!!!!!!!
+    # text_to_speech(body_text, "resources/audio_files/body_audio.mp3") # Un-comment when shipping!!!!!!!!
+    # speed_up_mp3("resources/audio_files/body_audio.mp3", "resources/audio_files/body_audio_faster.mp3", 1.25) # Un-comment when shipping!!!!!!!!
     body_audio = AudioFileClip("resources/audio_files/body_audio_faster.mp3")
 
     # Initialize list to hold all video clips
