@@ -66,13 +66,13 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
 
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio)
-    final_clip.write_videofile(output_path, fps=60)
+    final_clip.write_videofile(output_path, fps=60, audio_codec='aac')
 
 # Example usage
 if __name__ == "__main__":
     title_text = "I destroyed a public bathroom and when I was running away, from the scene, I heard someone scream “oh my god” after they saw what I did."
     body_text = "I was abroad and had gotten extremely sick. I came home with black diarrhea (I think I had a parasite) and was throwing up. I had never shit so much."
-    background_video_path = "resources/background_videos/gta.mp4"
+    background_video_path = "resources/background_videos/minecraft.mp4"
     banner_image_path = "resources/static_files/reddit_banner.png"
-    output_path = "output/gta.mp4"
+    output_path = "output/minecraft.mp4"
     assemble_video(title_text, body_text, background_video_path, banner_image_path, output_path)
