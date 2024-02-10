@@ -2,6 +2,21 @@ from dotenv import load_dotenv
 import os
 import requests
 import whisper_timestamped as whisper
+from pydub import AudioSegment
+from pydub.playback import play
+
+def speed_up_mp3(input_path, output_path, speed_factor):
+    """
+    Speeds up an audio file and saves the result to a new file.
+    """
+    # Load the audio file
+    audio = AudioSegment.from_file(input_path, format="mp3")
+
+    # Speed up the audio
+    sped_up = audio.speedup(playback_speed=speed_factor)
+
+    # Export the sped-up audio to a new file
+    sped_up.export(output_path, format="mp3")
 
 def text_to_speech(text, output_path):
     """
@@ -42,7 +57,7 @@ def text_to_speech(text, output_path):
 
 def generate_captions(audio_path):
     """
-    Generates captions for an audio file using the whisper library and extracting timestamps.
+    Generates 2-word captions for an audio file using the whisper library and extracting timestamps.
     """
     # Load a whisper model and transcribe the audio
     audio = whisper.load_audio(audio_path)
@@ -53,10 +68,22 @@ def generate_captions(audio_path):
     # Iterate through each segment in the JSON data
     for segment in json_result["segments"]:
         # Iterate through each word in the segment
-        for word_info in segment["words"]:
+        words = segment["words"]
+        num_words = len(words)
+        # Combine every two words into a single caption
+        for i in range(0, num_words, 2):
+            if i + 1 < num_words:
+                start = words[i]["start"]
+                end = words[i + 1]["end"]
+                text = words[i]["text"] + " " + words[i + 1]["text"]
+            else:
+                start = words[i]["start"]
+                end = words[i]["end"]
+                text = words[i]["text"]
             captions.append({
-                "text": word_info["text"],
-                "start": word_info["start"],
-                "end": word_info["end"]
-            })
+                "text": text,
+                "start": start,
+                "end": end
+            }) 
+
     return captions
