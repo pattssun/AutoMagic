@@ -1,6 +1,7 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, concatenate_audioclips, ImageClip, ColorClip
 from src.video_processing import crop_to_916, create_text_clip_for_body
 from src.audio_processing_xi import speed_up_mp3, text_to_speech, generate_captions
+import random
 
 # Hardcoded Reddit banner
 def assemble_video(title_text, body_text, background_video_path, banner_image_path, output_path):
@@ -52,8 +53,16 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
     # Combine the title audio and body audio
     combined_audio = concatenate_audioclips(audio_clips + [body_audio])
 
-    # Set the duration of the background clip to match the total duration
-    background_clip = background_clip.set_duration(combined_audio.duration)
+    # Select a random start time for the background video
+    # If the background video is longer than the total content duration, select a random start time
+    if background_clip.duration > combined_audio.duration:
+        max_start_time = background_clip.duration - combined_audio.duration
+        start_time = random.uniform(0, max_start_time)
+        end_time = start_time + combined_audio.duration
+        background_clip = background_clip.subclip(start_time, end_time)
+    else:
+        # If the background clip is shorter or equal to the content duration, return error
+        raise ValueError("Background video is shorter than the combined audio duration")
 
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio)
@@ -63,7 +72,7 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
 if __name__ == "__main__":
     title_text = "I destroyed a public bathroom and when I was running away, from the scene, I heard someone scream “oh my god” after they saw what I did."
     body_text = "I was abroad and had gotten extremely sick. I came home with black diarrhea (I think I had a parasite) and was throwing up. I had never shit so much."
-    background_video_path = "resources/background_videos/minecraft.mp4"
+    background_video_path = "resources/background_videos/gta.mp4"
     banner_image_path = "resources/static_files/reddit_banner.png"
-    output_path = "output/minecraft.mp4"
+    output_path = "output/gta.mp4"
     assemble_video(title_text, body_text, background_video_path, banner_image_path, output_path)
