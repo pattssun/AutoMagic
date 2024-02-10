@@ -98,5 +98,5 @@ def assemble_video(title_text, body_text, background_video_path, title_image_pat
 # Example usage
 if __name__ == "__main__":
     title_text = "I destroyed a public bathroom and when I was running away, from the scene, I heard someone scream “oh my god” after they saw what I did."
-    body_text = "I was abroad and had gotten extremely sick. I came home with black diarrhea (I think I had a parasite) and was throwing up. While I was driving, I had to stop at a gas station to relieve myself. I had never shit so much. I literally covered the entire toilet with shit, it was on the floor, on the wall, and all over the seat. I was so ashamed of myself I didn’t know what to do, so I ran. When I was leaving, I heard someone scream. I think it was the gas station employee. I feel bad as the gas station employee had to clean up my mess. That is my confession. I also confess that I don’t want my boyfriend to see this as he would be disgusted with me"
-    assemble_video(title_text, body_text, "resources/background_videos/gta.mp4", "resources/static_files/reddit_banner.png", "output/final_video_hardcoded_gta.mp4")
+    body_text = "I was abroad and had gotten extremely sick. I came home with black diarrhea (I think I had a parasite) and was throwing up. I had never shit so much."
+    assemble_video(title_text, body_text, "resources/background_videos/minecraft.mp4", "resources/static_files/reddit_banner.png", "output/final_video_hardcoded.mp4")
