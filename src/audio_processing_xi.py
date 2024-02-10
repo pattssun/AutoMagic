@@ -3,20 +3,6 @@ import os
 import requests
 import whisper_timestamped as whisper
 from pydub import AudioSegment
-from pydub.playback import play
-
-def speed_up_mp3(input_path, output_path, speed_factor):
-    """
-    Speeds up an audio file and saves the result to a new file.
-    """
-    # Load the audio file
-    audio = AudioSegment.from_file(input_path, format="mp3")
-
-    # Speed up the audio
-    sped_up = audio.speedup(playback_speed=speed_factor)
-
-    # Export the sped-up audio to a new file
-    sped_up.export(output_path, format="mp3")
 
 def text_to_speech(text, output_path):
     """
@@ -54,6 +40,18 @@ def text_to_speech(text, output_path):
             if chunk:
                 f.write(chunk)
 
+def speed_up_mp3(input_path, output_path, speed_factor):
+    """
+    Speeds up an audio file and saves the result to a new file.
+    """
+    # Load the audio file
+    audio = AudioSegment.from_file(input_path, format="mp3")
+
+    # Speed up the audio
+    sped_up = audio.speedup(playback_speed=speed_factor)
+
+    # Export the sped-up audio to a new file
+    sped_up.export(output_path, format="mp3")
 
 def generate_captions(audio_path):
     """
@@ -87,6 +85,3 @@ def generate_captions(audio_path):
             }) 
 
     return captions
-
-# test text_to_speech
-text_to_speech("I am a test", "resources/audio_files/test.mp3")
