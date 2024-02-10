@@ -57,7 +57,7 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
 
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio)
-    final_clip.write_videofile(output_path, fps=60)
+    final_clip.write_videofile(output_path, fps=60, codec="libx264", audio_codec="aac")
 
 # Example usage
 if __name__ == "__main__":
