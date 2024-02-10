@@ -16,8 +16,8 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
     # Convert the title text to speech and speed it up
     normal_title_audio_path = f"resources/audio_files/normal/{project_name}_title_audio.mp3"
     faster_title_audio_path = f"resources/audio_files/faster/{project_name}_title_audio.mp3"
-    text_to_speech(title_text, normal_title_audio_path) 
-    speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.25)
+    # text_to_speech(title_text, normal_title_audio_path) 
+    # speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.25)
     title_audio = AudioFileClip(faster_title_audio_path)
 
     # Load the pre-rendered title image as a clip
@@ -31,8 +31,8 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
     # Convert the body text to speech and speed it up
     normal_body_audio_path = f"resources/audio_files/normal/{project_name}_body_audio.mp3"
     faster_body_audio_path = f"resources/audio_files/faster/{project_name}_body_audio.mp3"
-    text_to_speech(body_text, normal_body_audio_path) 
-    speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.25) 
+    # text_to_speech(body_text, normal_body_audio_path) 
+    # speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.25) 
     body_audio = AudioFileClip(faster_body_audio_path)
 
     # Initialize list to hold all video clips
@@ -57,7 +57,7 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
 
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio)
-    final_clip.write_videofile(output_path, fps=60, codec="libx264", audio_codec="aac")
+    final_clip.write_videofile(output_path, fps=60)
 
 # Example usage
 if __name__ == "__main__":
