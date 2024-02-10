@@ -1,6 +1,6 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, concatenate_audioclips, ImageClip
 from src.video_processing import crop_to_916, create_text_clip_for_body, create_text_clip_for_title
-from src.audio_processing import text_to_speech, generate_captions
+from src.audio_processing_xi import text_to_speech, generate_captions
 
 # def assemble_video(title_text, body_text, background_video_path, output_filename):
 #     """
@@ -88,5 +88,5 @@ def assemble_video(title_text, body_text, background_video_path, title_image_pat
 # Example usage
 if __name__ == "__main__":
     title_text = "I destroyed a public bathroom and when I was running away, from the scene, I heard someone scream “oh my god” after they saw what I did."
-    body_text = "After applying for almost 1000+ SDE positions, I finally got an offer from Bambu Lab!!! This is a unicorn company that makes 3D printers, and I think it has great potential. Do you guys have any knowledge about their products? Some advice plz."
+    body_text = "I was abroad and had gotten extremely sick. I came home with black diarrhea (I think I had a parasite) and was throwing up. While I was driving, I had to stop at a gas station to relieve myself. I had never shit so much."
     assemble_video(title_text, body_text, "resources/background_videos/minecraft.mp4", "resources/static_files/reddit_banner.png", "output/final_video_hardcoded.mp4")
