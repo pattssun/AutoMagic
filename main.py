@@ -22,8 +22,8 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     # Convert the title text to speech and speed it up
     normal_title_audio_path = f"resources/audio_files/normal/{project_name}_title_audio.mp3"
     faster_title_audio_path = f"resources/audio_files/faster/{project_name}_title_audio.mp3"
-    text_to_speech(title_text, voice, normal_title_audio_path) 
-    speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.25)
+    # text_to_speech(title_text, voice, normal_title_audio_path) 
+    speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.15)
     title_audio = AudioFileClip(faster_title_audio_path)
 
     # Load the pre-rendered title image as a clip
@@ -37,8 +37,8 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     # Convert the body text to speech and speed it up
     normal_body_audio_path = f"resources/audio_files/normal/{project_name}_body_audio.mp3"
     faster_body_audio_path = f"resources/audio_files/faster/{project_name}_body_audio.mp3"
-    text_to_speech(body_text, voice, normal_body_audio_path) 
-    speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.25) 
+    # text_to_speech(body_text, voice, normal_body_audio_path) 
+    speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.15) 
     body_audio = AudioFileClip(faster_body_audio_path)
 
     # Initialize list to hold all video clips
