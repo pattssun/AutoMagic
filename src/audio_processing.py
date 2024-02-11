@@ -5,6 +5,9 @@ from pydub import AudioSegment
 from elevenlabs import set_api_key, generate, save
 
 def text_to_speech(text, output_path):
+    """
+    Converts text to speech using the Eleven API and saves the audio to a mp3 file.
+    """
     # Retrieve API key
     load_dotenv()
     xi_api_key = os.getenv('xi_api_key')
