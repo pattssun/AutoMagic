@@ -4,7 +4,7 @@ import whisper_timestamped as whisper
 from pydub import AudioSegment
 from elevenlabs import set_api_key, generate, save
 
-def text_to_speech(text, output_path):
+def text_to_speech(text, voice, output_path):
     """
     Converts text to speech using the Eleven API and saves the audio to a mp3 file.
     """
@@ -14,7 +14,7 @@ def text_to_speech(text, output_path):
     set_api_key(xi_api_key)
 
     # Generate speech using the Eleven API and save the audio to a mp3 file
-    audio = generate(text = text, voice = "Harry")
+    audio = generate(text = text, voice = voice)
     save(audio, output_path)
 
 def speed_up_mp3(input_path, output_path, speed_factor):

@@ -1,23 +1,28 @@
-from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, concatenate_audioclips, ImageClip, ColorClip
+from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, ImageClip, ColorClip, concatenate_audioclips
 from src.video_processing import crop_to_916, create_text_clip_for_body
 from src.audio_processing import speed_up_mp3, text_to_speech, generate_captions
 import random
 
+def read_text_file(file_path):
+    """
+    Reads text from a file and removes all newline characters.
+    """
+    with open(file_path, 'r', encoding='utf-8') as file:
+        text = file.read().replace('\n', ' ')
+    return text
+
 # Hardcoded Reddit banner
-def assemble_video(title_text, body_text, background_video_path, banner_image_path, output_path):
+def assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path):
     """
     Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
     """
-    # Extract project name from output_path
-    project_name = output_path.split("/")[-1].split(".")[0]
-
     # Load the background video and crop to a 9:16 aspect ratio
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
     # Convert the title text to speech and speed it up
     normal_title_audio_path = f"resources/audio_files/normal/{project_name}_title_audio.mp3"
     faster_title_audio_path = f"resources/audio_files/faster/{project_name}_title_audio.mp3"
-    text_to_speech(title_text, normal_title_audio_path) 
+    text_to_speech(title_text, voice, normal_title_audio_path) 
     speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.25)
     title_audio = AudioFileClip(faster_title_audio_path)
 
@@ -32,7 +37,7 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
     # Convert the body text to speech and speed it up
     normal_body_audio_path = f"resources/audio_files/normal/{project_name}_body_audio.mp3"
     faster_body_audio_path = f"resources/audio_files/faster/{project_name}_body_audio.mp3"
-    text_to_speech(body_text, normal_body_audio_path) 
+    text_to_speech(body_text, voice, normal_body_audio_path) 
     speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.25) 
     body_audio = AudioFileClip(faster_body_audio_path)
 
@@ -66,13 +71,15 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
 
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio)
-    final_clip.write_videofile(output_path, fps=60, audio_codec='aac')
+    final_clip.write_videofile(f"output/{project_name}.mp4", fps=60, audio_codec='aac')
 
 # Example usage
 if __name__ == "__main__":
-    title_text = "I pretend to be asleep so I don't hangout with a friend"
-    body_text = "I am an introverted person who likes to have his own space and this friend when he comes over he stays the whole day like from ten thirty in the morning and most of the time I haven't eaten breakfast yet and he stays until Six to Seven at night. Like I just graduated so am still searching for jobs, so am always home. But the thing is since I don't have a job yet, I don't have anything to feed him all day and that bugs me a lot makes me feel like a bad person, who does care but the real truth is am broke. So pretending to be asleep for 1h30 minutes until he leaves and that is the sacrifice am willing to make to have the whole day to myself applying for jobs than to open for him and spend the whole day miserable constantly thinking about what are we going to eat."
-    background_video_path = "resources/background_videos/minecraft2.mp4"
-    banner_image_path = "resources/banners/banner3.png"
-    output_path = "output/post3.mp4"
-    assemble_video(title_text, body_text, background_video_path, banner_image_path, output_path)
+    project_name = "post3" # Change this to the name of the project
+    voice = "Harry" # Change this to the desired voice
+    background_video_path = "resources/background_videos/minecraft2.mp4" # Change this to the path of the background video
+
+    title_text = read_text_file(f"resources/text_files/{project_name}/title_text.txt")
+    body_text = read_text_file(f"resources/text_files/{project_name}/body_text.txt")
+    banner_image_path = f"resources/banners/{project_name}.png"
+    assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
