@@ -1,58 +1,18 @@
 from dotenv import load_dotenv
 import os
-import requests
 import whisper_timestamped as whisper
 from pydub import AudioSegment
 from elevenlabs import set_api_key, generate, save
 
 def text_to_speech(text, output_path):
-    set_api_key('dd4ef31a23420951d14384865cf42800') # HIDE !!!!!!!!!!!!!!
+    # Retrieve API key
+    load_dotenv()
+    xi_api_key = os.getenv('xi_api_key')
+    set_api_key(xi_api_key)
 
+    # Generate speech using the Eleven API and save the audio to a mp3 file
     audio = generate(text = text, voice = "Harry")
     save(audio, output_path)
-
-# def text_to_speech(text, output_path):
-#     """
-#     Converts text to speech using the Eleven API and saves the audio to a file.
-#     """
-#     # Retrieve API key
-#     load_dotenv()
-#     xi_api_key = os.getenv('xi_api_key')
-
-#     # Select voice ID and model ID
-#     voice_id_liam = "TX3LPaxmHKxFdv7VOQHJ"
-#     voice_id_charlotte = "XB0fDUnXU5powFXDhCwa"
-#     model_id = "eleven_multilingual_v1"
-
-#     url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id_charlotte}"
-
-#     data = {
-#         "text": text,
-#         "voice_settings": {
-#             "similarity_boost": 0.75,
-#             "stability": 0.25
-#             },
-#         "model_id": model_id
-#     }
-#     headers = {
-#         "xi-api-key": xi_api_key,
-#         "Content-Type": "application/json",
-#         "Accept": "audio/mpeg"
-#     }
-
-#     # Make the POST request to the API
-#     response = requests.post(url, json=data, headers=headers)
-
-#     # Check if the request was successful
-#     if response.status_code == 200:
-#         # Save the received audio content to the specified output file
-#         with open(output_path, 'wb') as f:
-#             for chunk in response.iter_content(chunk_size=1024):
-#                 if chunk:
-#                     f.write(chunk)
-#     else:
-#         print(f"Error: Failed to generate speech. Status code: {response.status_code}")
-#         print(response.text)
 
 def speed_up_mp3(input_path, output_path, speed_factor):
     """
@@ -99,6 +59,3 @@ def generate_captions(audio_path):
             }) 
 
     return captions
-
-# test text_to_speech
-text_to_speech("Hello, this is a test.", "test.mp3")
