@@ -1,6 +1,6 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, concatenate_audioclips, ImageClip, ColorClip
 from src.video_processing import crop_to_916, create_text_clip_for_body
-from src.audio_processing_xi import speed_up_mp3, text_to_speech, generate_captions
+from src.audio_processing import speed_up_mp3, text_to_speech, generate_captions
 import random
 
 # Hardcoded Reddit banner
@@ -17,8 +17,8 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
     # Convert the title text to speech and speed it up
     normal_title_audio_path = f"resources/audio_files/normal/{project_name}_title_audio.mp3"
     faster_title_audio_path = f"resources/audio_files/faster/{project_name}_title_audio.mp3"
-    # text_to_speech(title_text, normal_title_audio_path) 
-    # speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.25)
+    text_to_speech(title_text, normal_title_audio_path) 
+    speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.25)
     title_audio = AudioFileClip(faster_title_audio_path)
 
     # Load the pre-rendered title image as a clip
@@ -32,8 +32,8 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
     # Convert the body text to speech and speed it up
     normal_body_audio_path = f"resources/audio_files/normal/{project_name}_body_audio.mp3"
     faster_body_audio_path = f"resources/audio_files/faster/{project_name}_body_audio.mp3"
-    # text_to_speech(body_text, normal_body_audio_path) 
-    # speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.25) 
+    text_to_speech(body_text, normal_body_audio_path) 
+    speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.25) 
     body_audio = AudioFileClip(faster_body_audio_path)
 
     # Initialize list to hold all video clips
@@ -70,9 +70,9 @@ def assemble_video(title_text, body_text, background_video_path, banner_image_pa
 
 # Example usage
 if __name__ == "__main__":
-    title_text = "I destroyed a public bathroom and when I was running away, from the scene, I heard someone scream “oh my god” after they saw what I did."
-    body_text = "I was abroad and had gotten extremely sick. I came home with black diarrhea (I think I had a parasite) and was throwing up. I had never shit so much."
-    background_video_path = "resources/background_videos/minecraft.mp4"
-    banner_image_path = "resources/static_files/reddit_banner.png"
-    output_path = "output/minecraft.mp4"
+    title_text = "I pretend to be asleep so I don't hangout with a friend"
+    body_text = "I am an introverted person who likes to have his own space and this friend when he comes over he stays the whole day like from ten thirty in the morning and most of the time I haven't eaten breakfast yet and he stays until Six to Seven at night. Like I just graduated so am still searching for jobs, so am always home. But the thing is since I don't have a job yet, I don't have anything to feed him all day and that bugs me a lot makes me feel like a bad person, who does care but the real truth is am broke. So pretending to be asleep for 1h30 minutes until he leaves and that is the sacrifice am willing to make to have the whole day to myself applying for jobs than to open for him and spend the whole day miserable constantly thinking about what are we going to eat."
+    background_video_path = "resources/background_videos/minecraft2.mp4"
+    banner_image_path = "resources/banners/banner3.png"
+    output_path = "output/post3.mp4"
     assemble_video(title_text, body_text, background_video_path, banner_image_path, output_path)
