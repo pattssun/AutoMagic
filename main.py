@@ -78,7 +78,8 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
 if __name__ == "__main__":
     voice = "Liam" # Change this to the desired voice
     background_video_path = "resources/background_videos/minecraft2.mp4" # Change this to the path of the background video
-    today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
+    # today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
+    today_date = "2024-02-13"
     # Assemble the video for each post in today's text_files directory
     for i in [1,2,3]:
         project_name = f"{today_date}-post{i}" 
@@ -91,4 +92,8 @@ if __name__ == "__main__":
 Current workflow:
 1. Import Figma banners in banners
 2. Import 3 Reddit posts in text_files
+3. Download ouput videos
+4. Select TikTok song
+5. Input TikTok description
+6. Upload to TikTok
 """          

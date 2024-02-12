@@ -23,7 +23,7 @@ def crop_to_916(clip):
 
     return cropped_clip
 
-def create_text_clip_for_title(text, start_time, end_time, clip_size, fontsize=50, font='Arial', color='black', bg_color=(255, 255, 255)):
+def create_text_clip_for_title(text, start_time, end_time, clip_size, fontsize=65, font='Arial', color='black', bg_color=(255, 255, 255)):
     """
     Creates a moviepy TextClip object for a title text in a dynamic box.
     The box has a fixed width of 780 pixels and is centered within a 1080x1920 canvas
