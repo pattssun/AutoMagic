@@ -2,6 +2,7 @@ from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, Ima
 from src.video_processing import crop_to_916, create_text_clip_for_body
 from src.audio_processing import speed_up_mp3, text_to_speech, generate_captions
 import random
+from datetime import datetime
 
 def read_text_file(file_path):
     """
@@ -22,7 +23,7 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     # Convert the title text to speech and speed it up
     normal_title_audio_path = f"resources/audio_files/normal/{project_name}_title_audio.mp3"
     faster_title_audio_path = f"resources/audio_files/faster/{project_name}_title_audio.mp3"
-    # text_to_speech(title_text, voice, normal_title_audio_path) 
+    text_to_speech(title_text, voice, normal_title_audio_path) 
     speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.15)
     title_audio = AudioFileClip(faster_title_audio_path)
 
@@ -37,7 +38,7 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     # Convert the body text to speech and speed it up
     normal_body_audio_path = f"resources/audio_files/normal/{project_name}_body_audio.mp3"
     faster_body_audio_path = f"resources/audio_files/faster/{project_name}_body_audio.mp3"
-    # text_to_speech(body_text, voice, normal_body_audio_path) 
+    text_to_speech(body_text, voice, normal_body_audio_path) 
     speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.15) 
     body_audio = AudioFileClip(faster_body_audio_path)
 
@@ -75,11 +76,19 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
 
 # Example usage
 if __name__ == "__main__":
-    project_name = "post3" # Change this to the name of the project
-    voice = "Harry" # Change this to the desired voice
+    voice = "Liam" # Change this to the desired voice
     background_video_path = "resources/background_videos/minecraft2.mp4" # Change this to the path of the background video
+    today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
+    # Assemble the video for each post in today's text_files directory
+    for i in [1,2,3]:
+        project_name = f"{today_date}-post{i}" 
+        title_text = read_text_file(f"resources/text_files/{today_date}/post{i}/title_text.txt")
+        body_text = read_text_file(f"resources/text_files/{today_date}/post{i}/body_text.txt")
+        banner_image_path = f"resources/banners/{today_date}/post{i}.png"
+        assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
 
-    title_text = read_text_file(f"resources/text_files/{project_name}/title_text.txt")
-    body_text = read_text_file(f"resources/text_files/{project_name}/body_text.txt")
-    banner_image_path = f"resources/banners/{project_name}.png"
-    assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
+"""
+Current workflow:
+1. Import Figma banners in banners
+2. Import 3 Reddit posts in text_files
+"""          
