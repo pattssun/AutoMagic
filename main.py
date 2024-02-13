@@ -1,5 +1,5 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, ImageClip, ColorClip, concatenate_audioclips
-from src.video_processing import crop_to_916, create_text_clip_for_body
+from src.video_processing import crop_to_916, create_text_clip_for_body, create_text_clip_for_title
 from src.audio_processing import speed_up_mp3, text_to_speech, generate_captions
 import random
 from datetime import datetime
@@ -32,10 +32,12 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     # Load the pre-rendered title image as a clip
     title_image_clip = ImageClip(banner_image_path).set_duration(title_audio.duration).set_audio(title_audio)
 
+    title_clip = create_text_clip_for_title(title_text, 0, title_audio.duration, clip_size=background_clip.size)
+    
     # Create a 0.5 second silent audio clip and blank video clip for the pause
     pause_duration = 0.5
     pause_audio_clip = AudioFileClip("resources/audio_files/silence.mp3").subclip(0, pause_duration)
-    pause_video_clip = ColorClip(size=title_image_clip.size, color=(0,0,0,0), duration=pause_duration).set_audio(pause_audio_clip)
+    pause_video_clip = ColorClip(size=title_clip.size, color=(0,0,0,0), duration=pause_duration).set_audio(pause_audio_clip)
 
     # Convert the body text to speech and speed it up
     normal_body_audio_path = f"resources/audio_files/normal/{project_name} (body_audio.mp3)"
@@ -46,7 +48,7 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     body_audio = AudioFileClip(faster_body_audio_path)
 
     # Initialize list to hold all video clips
-    video_clips = [title_image_clip, pause_video_clip]
+    video_clips = [title_clip, pause_video_clip]
 
     # Initialize list to hold all audio clips
     audio_clips = [title_audio, pause_audio_clip]
