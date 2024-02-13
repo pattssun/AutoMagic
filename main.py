@@ -99,12 +99,10 @@ if __name__ == "__main__":
 # if __name__ == "__main__":
 #     voice = "Liam" 
 #     background_video_path = "resources/background_videos/minecraft2.mp4"
-#     today_date = "2024-02-11" # Change to desired date
-#     i = 1 # Change to post number
-#     project_name = f"{today_date}-post{i}-TEST" 
-#     title_text = read_text_file(f"resources/text_files/TEST/title_text.txt")
-#     body_text = read_text_file(f"resources/text_files/TEST/body_text.txt")
-#     banner_image_path = f"resources/banners/{today_date}/post{i}.png"
+#     project_name = f"TEST" 
+#     title_text = read_text_file(f"resources/text_files/{project_name}/title_text.txt")
+#     body_text = read_text_file(f"resources/text_files/{project_name}/body_text.txt")
+#     banner_image_path = f"resources/banners/{project_name}.png"
 #     assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
 
 """
