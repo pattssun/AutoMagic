@@ -3,6 +3,7 @@ from src.video_processing import crop_to_916, create_text_clip_for_body
 from src.audio_processing import speed_up_mp3, text_to_speech, generate_captions
 import random
 from datetime import datetime
+import os
 
 def read_text_file(file_path):
     """
@@ -21,8 +22,8 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
     # Convert the title text to speech and speed it up
-    normal_title_audio_path = f"resources/audio_files/normal/{project_name}_title_audio.mp3"
-    faster_title_audio_path = f"resources/audio_files/faster/{project_name}_title_audio.mp3"
+    normal_title_audio_path = f"resources/audio_files/normal/{project_name} (title_audio.mp3)"
+    faster_title_audio_path = f"resources/audio_files/faster/{project_name} (title_audio.mp3)"
     text_to_speech(title_text, voice, normal_title_audio_path) 
     speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.15)
     title_audio = AudioFileClip(faster_title_audio_path)
@@ -36,8 +37,8 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     pause_video_clip = ColorClip(size=title_image_clip.size, color=(0,0,0,0), duration=pause_duration).set_audio(pause_audio_clip)
 
     # Convert the body text to speech and speed it up
-    normal_body_audio_path = f"resources/audio_files/normal/{project_name}_body_audio.mp3"
-    faster_body_audio_path = f"resources/audio_files/faster/{project_name}_body_audio.mp3"
+    normal_body_audio_path = f"resources/audio_files/normal/{project_name} (body_audio.mp3)"
+    faster_body_audio_path = f"resources/audio_files/faster/{project_name} (body_audio.mp3)"
     text_to_speech(body_text, voice, normal_body_audio_path) 
     speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.15) 
     body_audio = AudioFileClip(faster_body_audio_path)
@@ -74,11 +75,17 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio)
     final_clip.write_videofile(f"output/{project_name}.mp4", fps=60, audio_codec='aac')
 
-# Example usage
+    # Remove audio files
+    os.remove(normal_title_audio_path)
+    os.remove(faster_title_audio_path)
+    os.remove(normal_body_audio_path)
+    os.remove(faster_body_audio_path)
+
+# Assemble multiple videos
 if __name__ == "__main__":
-    voice = "Liam" # Change this to the desired voice
-    background_video_path = "resources/background_videos/minecraft2.mp4" # Change this to the path of the background video
-    # today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
+    voice = "Liam" 
+    background_video_path = "resources/background_videos/minecraft2.mp4" 
+    today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
     today_date = "2024-02-13"
     # Assemble the video for each post in today's text_files directory
     for i in [1,2,3]:
@@ -87,6 +94,18 @@ if __name__ == "__main__":
         body_text = read_text_file(f"resources/text_files/{today_date}/post{i}/body_text.txt")
         banner_image_path = f"resources/banners/{today_date}/post{i}.png"
         assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
+
+# # Assemble one video
+# if __name__ == "__main__":
+#     voice = "Liam" 
+#     background_video_path = "resources/background_videos/minecraft2.mp4"
+#     today_date = "2024-02-11" # Change to desired date
+#     i = 1 # Change to post number
+#     project_name = f"{today_date}-post{i}-TEST" 
+#     title_text = read_text_file(f"resources/text_files/TEST/title_text.txt")
+#     body_text = read_text_file(f"resources/text_files/TEST/body_text.txt")
+#     banner_image_path = f"resources/banners/{today_date}/post{i}.png"
+#     assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
 
 """
 Current workflow:

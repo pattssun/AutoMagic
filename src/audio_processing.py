@@ -3,6 +3,7 @@ import os
 import whisper_timestamped as whisper
 from pydub import AudioSegment
 from elevenlabs import set_api_key, generate, save
+import io
 
 def text_to_speech(text, voice, output_path):
     """
