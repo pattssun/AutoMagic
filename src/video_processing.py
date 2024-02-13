@@ -78,7 +78,7 @@ def create_text_clip_for_title(text, start_time, end_time, clip_size, fontsize=3
     bottom_image_clip = ImageClip("resources/banners/Bottom.png").resize(width=box_width).set_position(('center', 'bottom'))
 
     # Composite the text clip over the box clip
-    composite_clip = CompositeVideoClip([box_clip, text_clip, top_image_clip, bottom_image_clip], size=(box_width, box_height + 182))
+    composite_clip = CompositeVideoClip([box_clip, text_clip, top_image_clip, bottom_image_clip], size=(box_width, box_height + 204))
 
     # Position the entire composite clip to the center of the specified clip size
     composite_clip = composite_clip.set_position('center').set_start(start_time).set_end(end_time)
