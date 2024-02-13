@@ -24,8 +24,9 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     # Convert the title text to speech and speed it up
     normal_title_audio_path = f"resources/audio_files/normal/{project_name} (title_audio.mp3)"
     faster_title_audio_path = f"resources/audio_files/faster/{project_name} (title_audio.mp3)"
-    text_to_speech(title_text, voice, normal_title_audio_path) 
-    speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.15)
+    if project_name != "TEST":
+        text_to_speech(title_text, voice, normal_title_audio_path) 
+        speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.15)
     title_audio = AudioFileClip(faster_title_audio_path)
 
     # Load the pre-rendered title image as a clip
@@ -39,8 +40,9 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     # Convert the body text to speech and speed it up
     normal_body_audio_path = f"resources/audio_files/normal/{project_name} (body_audio.mp3)"
     faster_body_audio_path = f"resources/audio_files/faster/{project_name} (body_audio.mp3)"
-    text_to_speech(body_text, voice, normal_body_audio_path) 
-    speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.15) 
+    if project_name != "TEST":
+        text_to_speech(body_text, voice, normal_body_audio_path) 
+        speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.15) 
     body_audio = AudioFileClip(faster_body_audio_path)
 
     # Initialize list to hold all video clips
@@ -76,34 +78,35 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
     final_clip.write_videofile(f"output/{project_name}.mp4", fps=60, audio_codec='aac')
 
     # Remove audio files
-    os.remove(normal_title_audio_path)
-    os.remove(faster_title_audio_path)
-    os.remove(normal_body_audio_path)
-    os.remove(faster_body_audio_path)
+    if project_name != "TEST":
+        os.remove(normal_title_audio_path)
+        os.remove(faster_title_audio_path)
+        os.remove(normal_body_audio_path)
+        os.remove(faster_body_audio_path)
 
-# Assemble multiple videos
-if __name__ == "__main__":
-    voice = "Liam" 
-    background_video_path = "resources/background_videos/minecraft2.mp4" 
-    today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
-    today_date = "2024-02-13"
-    # Assemble the video for each post in today's text_files directory
-    for i in [1,2,3]:
-        project_name = f"{today_date}-post{i}" 
-        title_text = read_text_file(f"resources/text_files/{today_date}/post{i}/title_text.txt")
-        body_text = read_text_file(f"resources/text_files/{today_date}/post{i}/body_text.txt")
-        banner_image_path = f"resources/banners/{today_date}/post{i}.png"
-        assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
-
-# # Assemble one video
+# # Assemble multiple videos
 # if __name__ == "__main__":
 #     voice = "Liam" 
-#     background_video_path = "resources/background_videos/minecraft2.mp4"
-#     project_name = f"TEST" 
-#     title_text = read_text_file(f"resources/text_files/{project_name}/title_text.txt")
-#     body_text = read_text_file(f"resources/text_files/{project_name}/body_text.txt")
-#     banner_image_path = f"resources/banners/{project_name}.png"
-#     assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
+#     background_video_path = "resources/background_videos/minecraft2.mp4" 
+#     today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
+#     today_date = "2024-02-13"
+#     # Assemble the video for each post in today's text_files directory
+#     for i in [1,2,3]:
+#         project_name = f"{today_date}-post{i}" 
+#         title_text = read_text_file(f"resources/text_files/{today_date}/post{i}/title_text.txt")
+#         body_text = read_text_file(f"resources/text_files/{today_date}/post{i}/body_text.txt")
+#         banner_image_path = f"resources/banners/{today_date}/post{i}.png"
+#         assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
+
+# Assemble one video
+if __name__ == "__main__":
+    voice = "Liam" 
+    background_video_path = "resources/background_videos/minecraft2.mp4"
+    project_name = f"TEST" 
+    title_text = read_text_file(f"resources/text_files/{project_name}/title_text.txt")
+    body_text = read_text_file(f"resources/text_files/{project_name}/body_text.txt")
+    banner_image_path = f"resources/banners/{project_name}.png"
+    assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
 
 """
 Current workflow:
