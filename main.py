@@ -29,9 +29,7 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
         speed_up_mp3(normal_title_audio_path, faster_title_audio_path, 1.15)
     title_audio = AudioFileClip(faster_title_audio_path)
 
-    # Load the pre-rendered title image as a clip
-    title_image_clip = ImageClip(banner_image_path).set_duration(title_audio.duration).set_audio(title_audio)
-
+    # Create a text clip for the title
     title_clip = create_text_clip_for_title(title_text, 0, title_audio.duration, clip_size=background_clip.size)
     
     # Create a 0.5 second silent audio clip and blank video clip for the pause
@@ -86,29 +84,28 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
         os.remove(normal_body_audio_path)
         os.remove(faster_body_audio_path)
 
-# # Production
-# if __name__ == "__main__":
-#     voice = "Liam" 
-#     background_video_path = "resources/background_videos/minecraft2.mp4" 
-#     today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
-#     today_date = "2024-02-13"
-#     # Assemble the video for each post in today's text_files directory
-#     for i in [1,2,3]:
-#         project_name = f"{today_date}-post{i}" 
-#         title_text = read_text_file(f"resources/text_files/{today_date}/post{i}/title_text.txt")
-#         body_text = read_text_file(f"resources/text_files/{today_date}/post{i}/body_text.txt")
-#         banner_image_path = f"resources/banners/{today_date}/post{i}.png"
-#         assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
-
-# Testing
+# Production
 if __name__ == "__main__":
     voice = "Liam" 
-    background_video_path = "resources/background_videos/minecraft2.mp4"
-    project_name = f"TEST" 
-    title_text = read_text_file(f"resources/text_files/{project_name}/title_text.txt")
-    body_text = read_text_file(f"resources/text_files/{project_name}/body_text.txt")
-    banner_image_path = f"resources/banners/{project_name}.png"
-    assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
+    background_video_path = "resources/background_videos/trackmania.mp4" 
+    today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
+    # Assemble the video for each post in today's text_files directory
+    for i in [1,2,3]:
+        project_name = f"{today_date}-post{i}" 
+        title_text = read_text_file(f"resources/text_files/{today_date}/post{i}/title_text.txt")
+        body_text = read_text_file(f"resources/text_files/{today_date}/post{i}/body_text.txt")
+        banner_image_path = f"resources/banners/{today_date}/post{i}.png"
+        assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
+
+# # Testing
+# if __name__ == "__main__":
+#     voice = "Liam" 
+#     background_video_path = "resources/background_videos/minecraft2.mp4"
+#     project_name = f"TEST" 
+#     title_text = read_text_file(f"resources/text_files/{project_name}/title_text.txt")
+#     body_text = read_text_file(f"resources/text_files/{project_name}/body_text.txt")
+#     banner_image_path = f"resources/banners/{project_name}.png"
+#     assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
 
 """
 Current workflow:
