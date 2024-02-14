@@ -86,7 +86,7 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
         os.remove(normal_body_audio_path)
         os.remove(faster_body_audio_path)
 
-# # Assemble multiple videos
+# # Production
 # if __name__ == "__main__":
 #     voice = "Liam" 
 #     background_video_path = "resources/background_videos/minecraft2.mp4" 
@@ -100,7 +100,7 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
 #         banner_image_path = f"resources/banners/{today_date}/post{i}.png"
 #         assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
 
-# Assemble one video
+# Testing
 if __name__ == "__main__":
     voice = "Liam" 
     background_video_path = "resources/background_videos/minecraft2.mp4"
