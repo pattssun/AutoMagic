@@ -1,20 +1,13 @@
-from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, ImageClip, ColorClip, concatenate_audioclips
-from src.video_processing import crop_to_916, create_text_clip_for_body, create_text_clip_for_title
-from src.audio_processing import speed_up_mp3, text_to_speech, generate_captions
+from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, ColorClip, concatenate_audioclips
+from video_processing import crop_to_916, create_text_clip_for_body, create_text_clip_for_title
+from audio_processing import speed_up_mp3, text_to_speech
+from text_processing import read_text_file, generate_captions
 import random
 from datetime import datetime
 import os
 
-def read_text_file(file_path):
-    """
-    Reads text from a file and removes all newline characters.
-    """
-    with open(file_path, 'r', encoding='utf-8') as file:
-        text = file.read().replace('\n', ' ')
-    return text
-
 # Hardcoded Reddit banner
-def assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path):
+def assemble_video(project_name, voice, background_video_path, title_text, body_text):
     """
     Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
     """
@@ -84,35 +77,32 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
         os.remove(normal_body_audio_path)
         os.remove(faster_body_audio_path)
 
-# Production
-if __name__ == "__main__":
-    voice = "Liam" 
-    background_video_path = "resources/background_videos/trackmania.mp4" 
-    today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
-    # Assemble the video for each post in today's text_files directory
-    for i in [1,2,3]:
-        project_name = f"{today_date}-post{i}" 
-        title_text = read_text_file(f"resources/text_files/{today_date}/post{i}/title_text.txt")
-        body_text = read_text_file(f"resources/text_files/{today_date}/post{i}/body_text.txt")
-        banner_image_path = f"resources/banners/{today_date}/post{i}.png"
-        assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
-
-# # Testing
+# # Production
 # if __name__ == "__main__":
 #     voice = "Liam" 
-#     background_video_path = "resources/background_videos/minecraft2.mp4"
-#     project_name = f"TEST" 
-#     title_text = read_text_file(f"resources/text_files/{project_name}/title_text.txt")
-#     body_text = read_text_file(f"resources/text_files/{project_name}/body_text.txt")
-#     banner_image_path = f"resources/banners/{project_name}.png"
-#     assemble_video(project_name, voice, background_video_path, title_text, body_text, banner_image_path)
+#     background_video_path = "resources/background_videos/trackmania.mp4" 
+#     today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
+#     # Assemble the video for each post in today's text_files directory
+#     for i in [1,2,3]:
+#         project_name = f"{today_date}-post{i}" 
+#         title_text = read_text_file(f"resources/text_files/{today_date}/post{i}/title_text.txt")
+#         body_text = read_text_file(f"resources/text_files/{today_date}/post{i}/body_text.txt")
+#         assemble_video(project_name, voice, background_video_path, title_text, body_text)
+
+# Testing
+if __name__ == "__main__":
+    voice = "Liam" 
+    background_video_path = "resources/background_videos/trackmania.mp4"
+    project_name = f"TEST" 
+    title_text = read_text_file(f"resources/text_files/{project_name}/title_text.txt")
+    body_text = read_text_file(f"resources/text_files/{project_name}/body_text.txt")
+    assemble_video(project_name, voice, background_video_path, title_text, body_text)
 
 """
 Current workflow:
-1. Import Figma banners in banners
-2. Import 3 Reddit posts in text_files
-3. Download ouput videos
-4. Select TikTok song
-5. Input TikTok description
-6. Upload to TikTok
+1. Import 3 Reddit posts in text_files
+2. Download ouput videos
+3. Select TikTok song
+4. Input TikTok description
+5. Upload to TikTok
 """          
