@@ -40,3 +40,22 @@ def generate_captions(audio_path):
             }) 
 
     return captions
+
+# function to transcribe mp3 file and write text into a text file
+def transcribe_mp3(audio_path, output_path):
+    """
+    Transcribes an audio file and writes the text into a text file.
+    """
+    # Load a whisper model and transcribe the audio
+    audio = whisper.load_audio(audio_path)
+    model = whisper.load_model("base")
+    json_result = whisper.transcribe(model, audio, language="en")
+
+    # Write the transcribed text to a file
+    with open(output_path, 'w', encoding='utf-8') as file:
+        for segment in json_result["segments"]:
+            for word in segment["words"]:
+                file.write(word["text"] + " ")
+            file.write("\n")
+
+    return output_path
