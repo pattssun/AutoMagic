@@ -41,7 +41,6 @@ def generate_captions(audio_path):
 
     return captions
 
-# function to transcribe mp3 file and write text into a text file
 def transcribe_mp3(audio_path, output_path):
     """
     Transcribes an audio file and writes the text into a text file.
@@ -59,3 +58,7 @@ def transcribe_mp3(audio_path, output_path):
             file.write("\n")
 
     return output_path
+
+# # Example usage
+# if __name__ == "__main__":
+#     transcribe_mp3("tiktok.mp3", "tiktok.txt")

@@ -28,3 +28,4 @@ def speed_up_mp3(input_path, output_path, speed_factor):
 
     # Export the sped-up audio to a new file
     sped_up.export(output_path, format="mp3")
+

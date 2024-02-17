@@ -37,13 +37,13 @@ def retrieve_pixabay_image(query, output_path):
         print(f"Failed to retrieve images. Status code: {response.status_code}")
         return None
 
-# # Example usage
-# if __name__ == "__main__":
-#     query = "computer"
-#     images = retrieve_pixabay_image(query, f"resources/images/{query}.png")
+# Example usage
+if __name__ == "__main__":
+    query = "friends and family"
+    images = retrieve_pixabay_image(query, f"resources/images/{query}.png")
     
-#     # Check if the image was saved
-#     if os.path.exists(f"resources/images/{query}.png"):
-#         print(f"\nImage saved as {query}.png\n")
-#     else:
-#         print("Image not saved")
+    # Check if the image was saved
+    if os.path.exists(f"resources/images/{query}.png"):
+        print(f"\nImage saved at resources/images/{query}.png\n")
+    else:
+        print("Image not saved")
