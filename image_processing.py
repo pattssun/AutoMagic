@@ -39,7 +39,7 @@ def retrieve_pixabay_image(query, output_path):
 
 # Example usage
 if __name__ == "__main__":
-    query = "friends and family"
+    query = "crab"
     images = retrieve_pixabay_image(query, f"resources/images/{query}.png")
     
     # Check if the image was saved
