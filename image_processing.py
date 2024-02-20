@@ -11,7 +11,7 @@ def generate_image_queries(text):
         model="gpt-4-turbo-preview",  
         response_format={ "type": "json_object" },
         messages=[
-            {"role": "system", "content": "You are a helpful assistant designed to transform a TikTok video transcription to identify pivotal words and their corresponding Pixabay search queries. Segment the transcription into distinct thematic sections, pinpointing a key word or phrase from each segment. For each key word, craft a 1-3 word search query that encapsulates its essence. These queries will direct the image selection to visually complement the video's narrative. Consider Pixabay's limitations for niche topics and aim for queries with broad image availability. Output the key words with their queries in JSON format as {original_word: query}. This structured output will facilitate synchronizing the retrieved images with their respective segments in the video, based on the original word's timestamp."},
+            {"role": "system", "content": "You are a helpful assistant designed to engage your audience with dynamic visual content by dissecting the TikTok video transcription into finer thematic segments. Focus on extracting multiple pivotal words or phrases throughout the transcript. For each extracted word, devise a concise, 1-2 word search query that accurately represents its theme or subject matter. These refined queries will guide the selection of a diverse array of images from Pixabay, ensuring a visually rich and engaging video experience. Consider the broadness of Pixabay's image repository to maximize your query's potential. Format the output in JSON format as {original_word: query}, aiming for a higher frequency of image changes throughout the video. This approach will keep the audience captivated by closely aligning the visual transitions with the video's evolving narrative, based on the timestamps of the original words."},
             {"role": "user", "content": "Provide a list of search queries for the following transcription text input: " + text},
         ]
     )
@@ -67,5 +67,6 @@ if __name__ == "__main__":
     #     print("Image not saved")
 
     text = "When buying a house, pay a bunch of crackheads to hang around the house on days of viewing to scare off potential buyers. Clean your house perfectly before the first working day of your new cleaner. When she comes, apologize for the huge mess."
-    queries = generate_image_queries(text)
+    text2 = "In case you find yourself in a fight, take a look at the UFC illegal moves. They're illegal because they work too well and make too much damage. Buy cheap chocolate from Costco and melt it into your own molds and sell it as homemade chocolate. Friends and family will love supporting you."
+    queries = generate_image_queries(text2)
     print(queries)

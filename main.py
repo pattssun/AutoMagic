@@ -77,26 +77,26 @@ def assemble_video(project_name, voice, background_video_path, title_text, body_
         os.remove(normal_body_audio_path)
         os.remove(faster_body_audio_path)
 
-# Production
-if __name__ == "__main__":
-    voice = "Liam" 
-    background_video_path = "resources/background_videos/minecraft2.mp4" 
-    today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
-    # Assemble the video for each post in today's text_files directory
-    for i in [1,2,3]:
-        project_name = f"{today_date}-post{i}" 
-        title_text = read_text_file(f"resources/text_files/{today_date}/post{i}/title_text.txt")
-        body_text = read_text_file(f"resources/text_files/{today_date}/post{i}/body_text.txt")
-        assemble_video(project_name, voice, background_video_path, title_text, body_text)
-
-# # Testing
+# # Production
 # if __name__ == "__main__":
 #     voice = "Liam" 
-#     background_video_path = "resources/background_videos/trackmania.mp4"
-#     project_name = f"TEST" 
-#     title_text = read_text_file(f"resources/text_files/{project_name}/title_text.txt")
-#     body_text = read_text_file(f"resources/text_files/{project_name}/body_text.txt")
-#     assemble_video(project_name, voice, background_video_path, title_text, body_text)
+#     background_video_path = "resources/background_videos/minecraft2.mp4" 
+#     today_date = datetime.today().strftime('%Y-%m-%d') # Get today's date
+#     # Assemble the video for each post in today's text_files directory
+#     for i in [1,2,3]:
+#         project_name = f"{today_date}-post{i}" 
+#         title_text = read_text_file(f"resources/text_files/{today_date}/post{i}/title_text.txt")
+#         body_text = read_text_file(f"resources/text_files/{today_date}/post{i}/body_text.txt")
+#         assemble_video(project_name, voice, background_video_path, title_text, body_text)
+
+# Testing
+if __name__ == "__main__":
+    voice = "Liam" 
+    background_video_path = "resources/background_videos/trackmania.mp4"
+    project_name = f"TEST" 
+    title_text = read_text_file(f"resources/text_files/{project_name}/title_text.txt")
+    body_text = read_text_file(f"resources/text_files/{project_name}/body_text.txt")
+    assemble_video(project_name, voice, background_video_path, title_text, body_text)
 
 """
 Current workflow:
