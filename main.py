@@ -6,7 +6,7 @@ import random
 from datetime import datetime
 import os
 
-def assemble_video(project_name, voice, background_video_path, body_text):
+def assemble_video(background_video_path, body_text):
     """
     Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
     """
@@ -14,12 +14,9 @@ def assemble_video(project_name, voice, background_video_path, body_text):
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
     # Convert the body text to speech and speed it up
-    normal_body_audio_path = f"resources/audio_files/normal/{project_name} (body_audio.mp3)"
-    faster_body_audio_path = f"resources/audio_files/faster/{project_name} (body_audio.mp3)"
-    if project_name != "TEST":
-        text_to_speech(body_text, voice, normal_body_audio_path) 
-        speed_up_mp3(normal_body_audio_path, faster_body_audio_path, 1.15) 
-    body_audio = AudioFileClip(faster_body_audio_path)
+    text_to_speech(body_text, "test/tiktok_normal.mp3") 
+    speed_up_mp3("test/tiktok_normal.mp3", "test/tiktok_faster.mp3", 1.15) 
+    body_audio = AudioFileClip("test/tiktok_faster.mp3")
 
     # Initialize list to hold all video clips
     video_clips = []
@@ -28,7 +25,7 @@ def assemble_video(project_name, voice, background_video_path, body_text):
     audio_clips = []
 
     # Calculate start and end times for each body caption chunk
-    body_captions = generate_captions(faster_body_audio_path)
+    body_captions = generate_captions("test/tiktok_faster.mp3")
     for caption in body_captions:
         start_time = caption['start'] 
         end_time = caption['end']
@@ -51,17 +48,10 @@ def assemble_video(project_name, voice, background_video_path, body_text):
 
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio)
-    final_clip.write_videofile(f"output/{project_name}.mp4", fps=60, audio_codec='aac')
-
-    # Remove audio files
-    if project_name != "TEST":
-        os.remove(normal_body_audio_path)
-        os.remove(faster_body_audio_path)
+    final_clip.write_videofile(f"test/tiktok_final.mp4", fps=60, audio_codec='aac')
 
 # Testing
 if __name__ == "__main__":
-    voice = "Liam" 
     background_video_path = "resources/background_videos/trackmania.mp4"
-    project_name = f"TEST" 
-    body_text = read_text_file("tiktok_test copy.txt")
-    assemble_video(project_name, voice, background_video_path, body_text)
+    body_text = read_text_file("test/tiktok_test.txt")
+    assemble_video(background_video_path, body_text)

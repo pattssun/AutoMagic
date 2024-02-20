@@ -2,19 +2,27 @@ from dotenv import load_dotenv
 import os
 from pydub import AudioSegment
 from elevenlabs import set_api_key, generate, save
+from gtts import gTTS
 
-def text_to_speech(text, voice, output_path):
-    """
-    Converts text to speech using the Eleven API and saves the audio to a mp3 file.
-    """
-    # Retrieve API key
-    load_dotenv()
-    xi_api_key = os.getenv('xi_api_key')
-    set_api_key(xi_api_key)
+# def text_to_speech(text, voice, output_path):
+#     """
+#     Converts text to speech using the Eleven API and saves the audio to a mp3 file.
+#     """
+#     # Retrieve API key
+#     load_dotenv()
+#     xi_api_key = os.getenv('xi_api_key')
+#     set_api_key(xi_api_key)
 
-    # Generate speech using the Eleven API and save the audio to a mp3 file
-    audio = generate(text = text, voice = voice)
-    save(audio, output_path)
+#     # Generate speech using the Eleven API and save the audio to a mp3 file
+#     audio = generate(text = text, voice = voice)
+#     save(audio, output_path)
+
+def text_to_speech(text, output_filename):
+    """
+    Converts text to an audio file using gTTS.
+    """
+    tts = gTTS(text)
+    tts.save(output_filename)
 
 def speed_up_mp3(input_path, output_path, speed_factor):
     """

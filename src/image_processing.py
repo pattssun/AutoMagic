@@ -11,7 +11,7 @@ def generate_image_queries(text):
         model="gpt-4-turbo-preview",  
         response_format={ "type": "json_object" },
         messages=[
-            {"role": "system", "content": "You are a helpful assistant designed to engage your audience with dynamic visual content by dissecting the TikTok video transcription into finer thematic segments. Focus on extracting multiple pivotal words or phrases throughout the transcript. For each extracted word, devise a concise, 1-2 word search query that accurately represents its theme or subject matter. These refined queries will guide the selection of a diverse array of images from Pixabay, ensuring a visually rich and engaging video experience. Consider the broadness of Pixabay's image repository to maximize your query's potential. Format the output in JSON format as {original_word: query}, aiming for a higher frequency of image changes throughout the video. This approach will keep the audience captivated by closely aligning the visual transitions with the video's evolving narrative, based on the timestamps of the original words."},
+            {"role": "system", "content": "You are a helpful assistant designed to transform a TikTok transcript by identifying key words or phrases for dynamic visual content. Create concise, 1-2 word search queries for each key term to find relevant Pixabay images. Aim for a varied and engaging visual flow, leveraging Pixabay's extensive library. Consider the broadness of Pixabay's image repository to maximize your query's potential. Output queries in JSON as {original_word: [query]}, ensuring unique keys and frequent image updates to enhance the video narrative."},
             {"role": "user", "content": "Provide a list of search queries for the following transcription text input: " + text},
         ]
     )
@@ -20,7 +20,8 @@ def generate_image_queries(text):
 
     return answer
 
-def retrieve_pixabay_image(query, output_path):
+########### STUCK HERE ############
+def retrieve_pixabay_image(query, dict):
     """Retrieve image on Pixabay based on a query."""
     # Retrieve API key
     load_dotenv()
@@ -46,6 +47,7 @@ def retrieve_pixabay_image(query, output_path):
         data = response.json()
         
         # Save first image from the URL as a PNG file
+        output_path = f"test/pixabay_images/{query}.png"
         if data['hits']:
             image_url = data['hits'][0]['webformatURL']
             image_data = requests.get(image_url).content
