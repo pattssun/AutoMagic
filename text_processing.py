@@ -59,6 +59,6 @@ def transcribe_mp3(audio_path, output_path):
 
     return output_path
 
-# # Example usage
-# if __name__ == "__main__":
-#     transcribe_mp3("tiktok.mp3", "tiktok.txt")
+# Example usage
+if __name__ == "__main__":
+    transcribe_mp3("tiktok.mp3", "tiktok_test.txt")

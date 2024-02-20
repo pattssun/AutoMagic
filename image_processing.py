@@ -1,6 +1,23 @@
 import requests
 import os
 from dotenv import load_dotenv
+from openai import OpenAI
+
+def generate_image_queries(text):
+    load_dotenv()
+    client = OpenAI(api_key=os.getenv('openai_api_key'))
+
+    response = client.chat.completions.create(
+        model="gpt-4",  
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant designed to transform a TikTok video transcription into concise Pixabay search queries. Break down the transcription into clear, thematic sections. For each, generate a 1-2 word search query capturing the core idea. These queries will guide the image selection process, ensuring the visual content aligns with and enriches the video's narrative. Aim for broad appeal within Pixabay's image database, considering its limitations on niche topics"},
+            {"role": "user", "content": "Provide a list of search queries for the following transcription text input: " + text},
+        ]
+    )
+
+    answer = response.choices[0].message.content if response.choices else "No response"
+
+    return answer
 
 def retrieve_pixabay_image(query, output_path):
     """Retrieve image on Pixabay based on a query."""
@@ -39,11 +56,15 @@ def retrieve_pixabay_image(query, output_path):
 
 # Example usage
 if __name__ == "__main__":
-    query = "crab"
-    images = retrieve_pixabay_image(query, f"resources/images/{query}.png")
+    # query = "security footage"
+    # images = retrieve_pixabay_image(query, f"resources/images/{query}.png")
     
-    # Check if the image was saved
-    if os.path.exists(f"resources/images/{query}.png"):
-        print(f"\nImage saved at resources/images/{query}.png\n")
-    else:
-        print("Image not saved")
+    # # Check if the image was saved
+    # if os.path.exists(f"resources/images/{query}.png"):
+    #     print(f"\nImage saved at resources/images/{query}.png\n")
+    # else:
+    #     print("Image not saved")
+
+    text = "When buying a house, pay a bunch of crackheads to hang around the house on days of viewing to scare off potential buyers. Clean your house perfectly before the first working day of your new cleaner. When she comes, apologize for the huge mess."
+    queries = generate_image_queries(text)
+    print(queries)
