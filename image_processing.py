@@ -8,9 +8,10 @@ def generate_image_queries(text):
     client = OpenAI(api_key=os.getenv('openai_api_key'))
 
     response = client.chat.completions.create(
-        model="gpt-4",  
+        model="gpt-4-turbo-preview",  
+        response_format={ "type": "json_object" },
         messages=[
-            {"role": "system", "content": "You are a helpful assistant designed to transform a TikTok video transcription into concise Pixabay search queries. Break down the transcription into clear, thematic sections. For each, generate a 1-2 word search query capturing the core idea. These queries will guide the image selection process, ensuring the visual content aligns with and enriches the video's narrative. Aim for broad appeal within Pixabay's image database, considering its limitations on niche topics"},
+            {"role": "system", "content": "You are a helpful assistant designed to transform a TikTok video transcription to identify pivotal words and their corresponding Pixabay search queries. Segment the transcription into distinct thematic sections, pinpointing a key word or phrase from each segment. For each key word, craft a 1-3 word search query that encapsulates its essence. These queries will direct the image selection to visually complement the video's narrative. Consider Pixabay's limitations for niche topics and aim for queries with broad image availability. Output the key words with their queries in JSON format as {original_word: query}. This structured output will facilitate synchronizing the retrieved images with their respective segments in the video, based on the original word's timestamp."},
             {"role": "user", "content": "Provide a list of search queries for the following transcription text input: " + text},
         ]
     )
