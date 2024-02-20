@@ -6,7 +6,6 @@ import random
 from datetime import datetime
 import os
 
-# Hardcoded Reddit banner
 def assemble_video(project_name, voice, background_video_path, title_text, body_text):
     """
     Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
