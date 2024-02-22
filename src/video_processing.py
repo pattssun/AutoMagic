@@ -63,4 +63,7 @@ def create_text_clip_for_body(text, start_time, end_time, clip_size, font='resou
     """
     Creates a moviepy TextClip object for a body text.
     """
+
+    # Position the image to center upper half of the screen and align with corresponding text
+
     return TextClip(text, font=font, fontsize=fontsize, color=color, size=clip_size, stroke_color=stroke_color, stroke_width=stroke_width).set_position("center").set_start(start_time).set_end(end_time)

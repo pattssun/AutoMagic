@@ -2,6 +2,7 @@ import requests
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+import json
 
 def generate_image_queries(text):
     load_dotenv()
@@ -16,12 +17,11 @@ def generate_image_queries(text):
         ]
     )
 
-    answer = response.choices[0].message.content if response.choices else "No response"
+    answer = json.loads(response.choices[0].message.content) if response.choices else "No response"
 
     return answer
 
-########### STUCK HERE ############
-def retrieve_pixabay_image(query, dict):
+def retrieve_pixabay_image(dict):
     """Retrieve image on Pixabay based on a query."""
     # Retrieve API key
     load_dotenv()
@@ -29,33 +29,37 @@ def retrieve_pixabay_image(query, dict):
     
     # Base URL for the Pixabay API
     url = "https://pixabay.com/api/"
-    
-    # Parameters for the API request
-    params = {
-        'key': pixabay_api_key,
-        'q': query,
-        'image_type': 'photo',
-        'orientation': 'horizontal'
-    }
-    
-    # Make the GET request to the Pixabay API
-    response = requests.get(url, params=params)
-    
-    # Check if the request was successful
-    if response.status_code == 200:
-        # Parse the JSON response
-        data = response.json()
+
+    # Traverse dict and retrieve image for each query
+    for word, query in dict.items():
+        # Parameters for the API request
+        params = {
+            'key': pixabay_api_key,
+            'q': query[0],
+            'image_type': 'photo',
+            'orientation': 'horizontal'
+        }
         
-        # Save first image from the URL as a PNG file
-        output_path = f"test/pixabay_images/{query}.png"
-        if data['hits']:
-            image_url = data['hits'][0]['webformatURL']
-            image_data = requests.get(image_url).content
-            with open(output_path, 'wb') as f:
-                f.write(image_data)
-    else:
-        print(f"Failed to retrieve images. Status code: {response.status_code}")
-        return None
+        # Make the GET request to the Pixabay API
+        response = requests.get(url, params=params)
+        
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Parse the JSON response
+            data = response.json()
+            
+            # Save first image from the URL as a PNG file
+            output_path = f"test/pixabay_images/{query[0]}.png"
+            if data['hits']:
+                image_url = data['hits'][0]['webformatURL']
+                image_data = requests.get(image_url).content
+                with open(output_path, 'wb') as f:
+                    f.write(image_data)
+                # Save the output path to the dictionary
+                dict[word].append(output_path)
+        else:
+            print(f"Failed to retrieve images. Status code: {response.status_code}")
+            return None
 
 # Example usage
 if __name__ == "__main__":
@@ -68,7 +72,10 @@ if __name__ == "__main__":
     # else:
     #     print("Image not saved")
 
-    text = "When buying a house, pay a bunch of crackheads to hang around the house on days of viewing to scare off potential buyers. Clean your house perfectly before the first working day of your new cleaner. When she comes, apologize for the huge mess."
-    text2 = "In case you find yourself in a fight, take a look at the UFC illegal moves. They're illegal because they work too well and make too much damage. Buy cheap chocolate from Costco and melt it into your own molds and sell it as homemade chocolate. Friends and family will love supporting you."
+    text = "In case you find yourself in a fight, take a look at the UFC illegal moves. They're illegal because they work too well and make too much damage. Buy cheap chocolate from Costco and melt it into your own molds and sell it as homemade chocolate. Friends and family will love supporting you."
+    text2 = "When buying a house, pay a bunch of crackheads to hang around the house on days of viewing to scare off potential buyers. Clean your house perfectly before the first working day of your new cleaner. When she comes, apologize for the huge mess."
+
+    # Test the image query generation and retrieval
     queries = generate_image_queries(text2)
     print(queries)
+    retrieve_pixabay_image(queries)
