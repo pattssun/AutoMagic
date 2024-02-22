@@ -12,16 +12,16 @@ def generate_image_queries(text):
         model="gpt-4-turbo-preview",  
         response_format={ "type": "json_object" },
         messages=[
-            {"role": "system", "content": "You are a helpful assistant designed to transform a TikTok transcript by identifying key words or phrases for dynamic visual content. Create concise, 1-2 word search queries for each key term to find relevant Pixabay images. Aim for a varied and engaging visual flow, leveraging Pixabay's extensive library. Consider the broadness of Pixabay's image repository to maximize your query's potential. Output queries in JSON as {original_word: [query]}, ensuring unique keys and frequent image updates to enhance the video narrative."},
+            {"role": "system", "content": "You are a helpful assistant designed to transform a TikTok transcript by identifying key words or phrases for dynamic visual content. Create concise, 1-2 word search queries for each key term to find relevant Pixabay images. Aim for a varied and engaging visual flow, leveraging Pixabay's extensive library. Consider the broadness of Pixabay's image repository to maximize your query's potential. Output queries in JSON as a list of {keyword: <insert keyword>, query: <insert query>} mapped to the key 'queries', ensuring unique keys and frequent image updates to enhance the video narrative."},
             {"role": "user", "content": "Provide a list of search queries for the following transcription text input: " + text},
         ]
     )
 
     answer = json.loads(response.choices[0].message.content) if response.choices else "No response"
 
-    return answer
+    return answer['queries']
 
-def retrieve_pixabay_images(dict):
+def retrieve_pixabay_images(queries):
     """Retrieve image on Pixabay based on a query."""
     # Retrieve API key
     load_dotenv()
@@ -31,11 +31,11 @@ def retrieve_pixabay_images(dict):
     url = "https://pixabay.com/api/"
 
     # Traverse dict and retrieve image for each query
-    for word, query in dict.items():
+    for query in queries:
         # Parameters for the API request
         params = {
             'key': pixabay_api_key,
-            'q': query[0],
+            'q': query['query'],
             'image_type': 'photo',
             'orientation': 'horizontal'
         }
@@ -49,19 +49,19 @@ def retrieve_pixabay_images(dict):
             data = response.json()
             
             # Save first image from the URL as a PNG file
-            output_path = f"test/pixabay/{query[0]}.png"
+            output_path = f"test/pixabay/{query['query']}.png"
             if data['hits']:
                 image_url = data['hits'][0]['webformatURL']
                 image_data = requests.get(image_url).content
                 with open(output_path, 'wb') as f:
                     f.write(image_data)
                 # Save the output path to the dictionary
-                dict[word].append(output_path)
+                query['image_path'] = output_path
         else:
             print(f"Failed to retrieve images. Status code: {response.status_code}")
             return None
         
-    return dict
+    return queries
 
 # Example usage
 if __name__ == "__main__":
