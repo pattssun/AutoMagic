@@ -49,7 +49,7 @@ def retrieve_pixabay_images(dict):
             data = response.json()
             
             # Save first image from the URL as a PNG file
-            output_path = f"test/pixabay_images/{query[0]}.png"
+            output_path = f"test/pixabay/{query[0]}.png"
             if data['hits']:
                 image_url = data['hits'][0]['webformatURL']
                 image_data = requests.get(image_url).content

@@ -59,37 +59,24 @@ def create_text_clip_for_title(text, start_time, end_time, clip_size, fontsize=4
 
     return composite_clip
 
-# def create_text_clip_for_body(text, start_time, end_time, clip_size, font='resources/fonts/komika_axis.ttf', fontsize=65, color='white', stroke_color='black', stroke_width=3.25):
-#     """
-#     Creates a moviepy TextClip object for a body text.
-#     """
-#     return TextClip(text, font=font, fontsize=fontsize, color=color, size=clip_size, stroke_color=stroke_color, stroke_width=stroke_width).set_position("center").set_start(start_time).set_end(end_time)
+def create_text_clip_for_body(text, start_time, end_time, clip_size, font='resources/fonts/komika_axis.ttf', fontsize=65, color='white', stroke_color='black', stroke_width=3.25):
+    """
+    Creates a moviepy TextClip object for a body text.
+    """
+    return TextClip(text, font=font, fontsize=fontsize, color=color, size=clip_size, stroke_color=stroke_color, stroke_width=stroke_width).set_position("center").set_start(start_time).set_end(end_time)
 
-def create_text_clip_for_body(text, start_time, end_time, clip_size, image_path=None, font='resources/fonts/komika_axis.ttf', fontsize=65, color='white', stroke_color='black', stroke_width=3.25):
+def create_image_clip_for_body(start_time, end_time, clip_size, image_path=None):
     """
     Creates a MoviePy CompositeVideoClip object for body text with an image positioned in the center upper half of the screen.
     """
-    # Create the text clip
-    text_clip = TextClip(text, font=font, fontsize=fontsize, color=color, stroke_color=stroke_color, stroke_width=stroke_width, size=clip_size).set_position("center").set_start(start_time).set_end(end_time)
+    # Load the image clip
+    image_clip = ImageClip(image_path).set_duration(end_time - start_time).set_start(start_time)
     
-    clips = [text_clip]  # Initialize clips list with only the text clip
+    # Resize image clip if necessary to fit within the clip_size while maintaining aspect ratio
+    image_clip = image_clip.resize(height=clip_size[1] * 0.25)  # Resize the image to take up to 25% of the clip height
+    image_width, image_height = image_clip.size
+    image_position = ((clip_size[0] - image_width) / 2, (clip_size[1] * 0.25 - image_height) / 2)  # Position at the center of the upper half
     
-    # Proceed with image processing only if an image path is provided
-    if image_path:
-        # Load the image clip
-        image_clip = ImageClip(image_path).set_duration(end_time - start_time).set_start(start_time)
-        
-        # Resize image clip if necessary to fit within the clip_size while maintaining aspect ratio
-        image_clip = image_clip.resize(height=clip_size[1] * 0.25)  # Resize the image to take up to 25% of the clip height
-        image_width, image_height = image_clip.size
-        image_position = ((clip_size[0] - image_width) / 2, (clip_size[1] * 0.25 - image_height) / 2)  # Position at the center of the upper half
-        
-        image_clip = image_clip.set_position(image_position)
-        
-        # Add the image clip to the clips list
-        clips.append(image_clip)
+    image_clip = image_clip.set_position(image_position)
     
-    # Create a composite clip that combines the clips in the clips list
-    composite_clip = CompositeVideoClip(clips, size=clip_size).set_start(start_time).set_duration(end_time - start_time)
-    
-    return composite_clip
+    return image_clip
