@@ -40,7 +40,7 @@ def assemble_video(background_video_path, body_text):
         text_clip = create_text_clip_for_body(caption['text'], start_time, end_time, clip_size=background_clip.size)
         # Match each keyword in images with the caption text
         for image in images:
-            if image['keyword'] in caption_text.split():
+            if image['keyword'] in caption_text:
                 image_clip = create_image_clip_for_body(start_time, end_time, clip_size=background_clip.size, image_path=image['image_path'])
                 video_clips.append(image_clip)
                 break  # Stop after the first match to prevent overwriting
@@ -66,9 +66,7 @@ def assemble_video(background_video_path, body_text):
 
     for caption in body_captions:
             print(caption)
-
     print()
-
     for image in images:
         print(image)
 
