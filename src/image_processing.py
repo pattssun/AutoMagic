@@ -12,7 +12,7 @@ def generate_image_queries(text):
         model="gpt-4-turbo-preview",  
         response_format={ "type": "json_object" },
         messages=[
-            {"role": "system", "content": "You are a helpful assistant designed to transform a TikTok transcript by identifying key words or phrases for dynamic visual content. Create concise, 1-2 word search queries for each key term to find relevant Pixabay images. Aim for a varied and engaging visual flow, leveraging Pixabay's extensive library. Consider the broadness of Pixabay's image repository to maximize your query's potential. Output queries in JSON as a list of {keyword: <insert keyword>, query: <insert query>} mapped to the key 'queries', ensuring unique keys and frequent image updates to enhance the video narrative."},
+            {"role": "system", "content": "You are a helpful assistant designed to transform a TikTok transcript by identifying key words or phrases for dynamic visual content. Create concise, 1-2 word search queries for each keyword (keyword has to be 1 word long) to find relevant Pixabay images. Aim for a varied and engaging visual flow, leveraging Pixabay's extensive library. Consider the broadness of Pixabay's image repository to maximize your query's potential. Output queries in JSON as a list of {keyword: <insert keyword>, query: <insert query>} mapped to the key 'queries', ensuring unique keys and frequent image updates to enhance the video narrative."},
             {"role": "user", "content": "Provide a list of search queries for the following transcription text input: " + text},
         ]
     )
