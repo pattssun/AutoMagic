@@ -2,6 +2,7 @@ from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, Col
 from src.video_processing import crop_to_916, create_text_clip_for_body
 from src.audio_processing import speed_up_mp3, text_to_speech
 from src.text_processing import read_text_file, generate_captions
+from src.image_processing import generate_image_queries, retrieve_pixabay_images
 import random
 from datetime import datetime
 import os
@@ -15,7 +16,7 @@ def assemble_video(background_video_path, body_text):
 
     # Convert the body text to speech and speed it up
     text_to_speech(body_text, "test/tiktok_normal.mp3") 
-    speed_up_mp3("test/tiktok_normal.mp3", "test/tiktok_faster.mp3", 1.15) 
+    speed_up_mp3("test/tiktok_normal.mp3", "test/tiktok_faster.mp3", 1.5) 
     body_audio = AudioFileClip("test/tiktok_faster.mp3")
 
     # Initialize list to hold all video clips
@@ -24,12 +25,24 @@ def assemble_video(background_video_path, body_text):
     # Initialize list to hold all audio clips
     audio_clips = []
 
+    # Generate image queries for the body text
+    queries = generate_image_queries(body_text)
+
+    # Retrieve images for the image queries
+    images = retrieve_pixabay_images(queries)
+
     # Calculate start and end times for each body caption chunk
     body_captions = generate_captions("test/tiktok_faster.mp3")
     for caption in body_captions:
+        first_word = caption['text'].split()[0]
         start_time = caption['start'] 
         end_time = caption['end']
-        text_clip = create_text_clip_for_body(caption['text'], start_time, end_time, clip_size=background_clip.size)
+        # if first_word in images:
+        #     image_path = images[first_word][1]
+        # else:
+        #     image_path = None
+        image_path = None
+        text_clip = create_text_clip_for_body(caption['text'], start_time, end_time, image_path=image_path, clip_size=background_clip.size)
         video_clips.append(text_clip)
 
     # Combine the title audio and body audio
@@ -52,6 +65,6 @@ def assemble_video(background_video_path, body_text):
 
 # Testing
 if __name__ == "__main__":
-    background_video_path = "resources/background_videos/trackmania.mp4"
-    body_text = read_text_file("test/tiktok_test.txt")
+    background_video_path = "resources/background_videos/minecraft2.mp4"
+    body_text = read_text_file("test/tiktok_test copy.txt")
     assemble_video(background_video_path, body_text)

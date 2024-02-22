@@ -21,7 +21,7 @@ def generate_image_queries(text):
 
     return answer
 
-def retrieve_pixabay_image(dict):
+def retrieve_pixabay_images(dict):
     """Retrieve image on Pixabay based on a query."""
     # Retrieve API key
     load_dotenv()
@@ -60,22 +60,19 @@ def retrieve_pixabay_image(dict):
         else:
             print(f"Failed to retrieve images. Status code: {response.status_code}")
             return None
+        
+    return dict
 
 # Example usage
 if __name__ == "__main__":
-    # query = "security footage"
-    # images = retrieve_pixabay_image(query, f"resources/images/{query}.png")
-    
-    # # Check if the image was saved
-    # if os.path.exists(f"resources/images/{query}.png"):
-    #     print(f"\nImage saved at resources/images/{query}.png\n")
-    # else:
-    #     print("Image not saved")
-
     text = "In case you find yourself in a fight, take a look at the UFC illegal moves. They're illegal because they work too well and make too much damage. Buy cheap chocolate from Costco and melt it into your own molds and sell it as homemade chocolate. Friends and family will love supporting you."
     text2 = "When buying a house, pay a bunch of crackheads to hang around the house on days of viewing to scare off potential buyers. Clean your house perfectly before the first working day of your new cleaner. When she comes, apologize for the huge mess."
+    text3 = "If you want to get off of work early, take 50 milligrams of zinc on an empty stomach, you will throw up violently in five minutes. If you ever rob a bank, make sure to hold your middle finger in front of you the whole time, so the news has to blur your face in the security footage."
 
     # Test the image query generation and retrieval
-    queries = generate_image_queries(text2)
+    queries = generate_image_queries(text3)
     print(queries)
-    retrieve_pixabay_image(queries)
+    print()
+    images = retrieve_pixabay_images(queries)
+    print(images)
+
