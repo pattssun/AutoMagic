@@ -33,18 +33,40 @@ def assemble_video(background_video_path, body_text):
 
     # Calculate start and end times for each body caption chunk
     body_captions = generate_captions("test/tiktok_faster.mp3")
+
+    # Pre-process captions to map them directly to images
+    caption_images = []
     for caption in body_captions:
         caption_text = caption['text']
         start_time = caption['start'] 
         end_time = caption['end']
-        text_clip = create_text_clip_for_body(caption['text'], start_time, end_time, clip_size=background_clip.size)
-        # Match each keyword in images with the caption text
+        text_clip = create_text_clip_for_body(caption_text, start_time, end_time, clip_size=background_clip.size)
+        video_clips.append(text_clip)
         for image in images:
             if image['keyword'] in caption_text:
-                image_clip = create_image_clip_for_body(start_time, end_time, clip_size=background_clip.size, image_path=image['image_path'])
-                video_clips.append(image_clip)
-                break  # Stop after the first match to prevent overwriting
-        video_clips.append(text_clip)
+                caption_images.append({
+                    'start': start_time,
+                    'end': end_time,
+                    'text': caption_text,
+                    'image_path': image['image_path'] 
+                })
+                break  # Stop after finding the first matching image
+
+    # Now, generate the clips with optimized logic
+    last_image_end = 0
+    for i, caption_image in enumerate(caption_images):
+        start_time = caption_image['start']
+        # If this isn't the last item, set the end time to the start of the next item; otherwise, use the caption end
+        end_time = caption_images[i + 1]['start'] if i + 1 < len(caption_images) else caption_image['end']
+        last_image_end = max(last_image_end, end_time)  # Update the last image end time
+
+        # Only create a new image clip if the image changes or it's the first image
+        if i == 0 or caption_images[i]['image_path'] != caption_images[i - 1]['image_path']:
+            image_clip = create_image_clip_for_body(start_time, last_image_end, clip_size=background_clip.size, image_path=caption_image['image_path'])
+            video_clips.append(image_clip)
+
+    # Ensure clips are sorted by start time as adding them out of order can cause issues
+    video_clips.sort(key=lambda clip: clip.start)
 
     # Combine the title audio and body audio
     combined_audio = concatenate_audioclips(audio_clips + [body_audio])
@@ -63,12 +85,6 @@ def assemble_video(background_video_path, body_text):
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio)
     final_clip.write_videofile(f"test/tiktok_final.mp4", fps=60, audio_codec='aac')
-
-    for caption in body_captions:
-            print(caption)
-    print()
-    for image in images:
-        print(image)
 
 # Testing
 if __name__ == "__main__":
