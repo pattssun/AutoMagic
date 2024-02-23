@@ -25,11 +25,13 @@ def assemble_video(background_video_path, body_text):
     # Initialize list to hold all audio clips
     audio_clips = []
 
-    # Generate image queries for the body text
-    queries = generate_image_queries(body_text)
+    # # Generate image queries for the body text
+    # queries = generate_image_queries(body_text)
 
-    # Retrieve images for the image queries
-    images = retrieve_pixabay_images(queries)
+    # # Retrieve images for the image queries
+    # images = retrieve_pixabay_images(queries)
+
+    images = [{'keyword': 'fight', 'query': 'combat', 'image_path': 'test/pixabay/combat.png'}, {'keyword': 'UFC', 'query': 'UFC', 'image_path': 'test/pixabay/UFC.png'}, {'keyword': 'illegal', 'query': 'forbidden', 'image_path': 'test/pixabay/forbidden.png'}, {'keyword': 'moves', 'query': 'martial arts', 'image_path': 'test/pixabay/martial arts.png'}, {'keyword': 'damage', 'query': 'injury', 'image_path': 'test/pixabay/injury.png'}]
 
     # Calculate start and end times for each body caption chunk
     body_captions = generate_captions("test/tiktok_faster.mp3")
