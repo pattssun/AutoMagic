@@ -23,31 +23,31 @@ def generate_captions(audio_path):
         # Iterate through each word in the segment
         words = segment["words"]
         num_words = len(words)
-        # # Combine every two words into a single caption
-        # for i in range(0, num_words, 2):
-        #     if i + 1 < num_words:
-        #         start = words[i]["start"]
-        #         end = words[i + 1]["end"]
-        #         text = words[i]["text"] + " " + words[i + 1]["text"]
-        #     else:
-        #         start = words[i]["start"]
-        #         end = words[i]["end"]
-        #         text = words[i]["text"]
-        #     captions.append({
-        #         "text": text,
-        #         "start": start,
-        #         "end": end
-        #     }) 
-        # Combine every word into a single caption
-        for i in range(0, num_words):
-            start = words[i]["start"]
-            end = words[i]["end"]
-            text = words[i]["text"]
+        # Combine every two words into a single caption
+        for i in range(0, num_words, 2):
+            if i + 1 < num_words:
+                start = words[i]["start"]
+                end = words[i + 1]["end"]
+                text = words[i]["text"] + " " + words[i + 1]["text"]
+            else:
+                start = words[i]["start"]
+                end = words[i]["end"]
+                text = words[i]["text"]
             captions.append({
                 "text": text,
                 "start": start,
                 "end": end
-            })
+            }) 
+        # # Combine every word into a single caption
+        # for i in range(0, num_words):
+        #     start = words[i]["start"]
+        #     end = words[i]["end"]
+        #     text = words[i]["text"]
+        #     captions.append({
+        #         "text": text,
+        #         "start": start,
+        #         "end": end
+        #     })
 
     return captions
 

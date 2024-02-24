@@ -6,6 +6,7 @@ from src.image_processing import generate_image_queries, retrieve_pixabay_images
 import random
 from datetime import datetime
 import os
+import re
 
 def assemble_video(background_video_path, body_text):
     """
@@ -45,7 +46,9 @@ def assemble_video(background_video_path, body_text):
         text_clip = create_text_clip_for_body(caption_text, start_time, end_time, clip_size=background_clip.size)
         video_clips.append(text_clip)
         for image in images:
-            if image['keyword'] in caption_text:
+            # Use re.search to find the keyword as a whole word (\b denotes word boundary)
+            pattern = r'\b' + re.escape(image['keyword']) + r'\b'
+            if re.search(pattern, caption_text, re.IGNORECASE):
                 caption_images.append({
                     'start': start_time,
                     'end': end_time,
@@ -57,7 +60,7 @@ def assemble_video(background_video_path, body_text):
     # Now, generate the clips with optimized logic
     last_image_end = 0
     for i, caption_image in enumerate(caption_images):
-        start_time = caption_image['start']
+        start_time = 0 if i == 0 else last_image_end
         # If this isn't the last item, set the end time to the start of the next item; otherwise, use the caption end
         end_time = caption_images[i + 1]['start'] if i + 1 < len(caption_images) else caption_image['end']
         last_image_end = max(last_image_end, end_time)  # Update the last image end time
@@ -87,6 +90,12 @@ def assemble_video(background_video_path, body_text):
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio)
     final_clip.write_videofile(f"test/tiktok_final.mp4", fps=60, audio_codec='aac')
+
+    print(body_captions)
+    print()
+    print(images)
+    print()
+    print(caption_images)
 
 # Testing
 if __name__ == "__main__":
