@@ -45,10 +45,9 @@ def assemble_video(background_video_path, body_text):
         end_time = caption['end']
         text_clip = create_text_clip_for_body(caption_text, start_time, end_time, clip_size=background_clip.size)
         video_clips.append(text_clip)
+        # Find images that match each caption text
         for image in images:
-            # Use re.search to find the keyword as a whole word (\b denotes word boundary)
-            pattern = r'\b' + re.escape(image['keyword']) + r'\b'
-            if re.search(pattern, caption_text, re.IGNORECASE):
+            if image['keyword'] in caption_text:
                 caption_images.append({
                     'start': start_time,
                     'end': end_time,
@@ -60,15 +59,14 @@ def assemble_video(background_video_path, body_text):
     # Now, generate the clips with optimized logic
     last_image_end = 0
     for i, caption_image in enumerate(caption_images):
-        start_time = 0 if i == 0 else last_image_end
+        # Set the start time to 0 if it's the first item; otherwise, use the last image end
+        start_time = body_captions[0]['start'] if i == 0 else last_image_end
         # If this isn't the last item, set the end time to the start of the next item; otherwise, use the caption end
         end_time = caption_images[i + 1]['start'] if i + 1 < len(caption_images) else caption_image['end']
         last_image_end = max(last_image_end, end_time)  # Update the last image end time
-
-        # Only create a new image clip if the image changes or it's the first image
-        if i == 0 or caption_images[i]['image_path'] != caption_images[i - 1]['image_path']:
-            image_clip = create_image_clip_for_body(start_time, last_image_end, clip_size=background_clip.size, image_path=caption_image['image_path'])
-            video_clips.append(image_clip)
+        # Create the image clip
+        image_clip = create_image_clip_for_body(start_time, last_image_end, clip_size=background_clip.size, image_path=caption_image['image_path'])
+        video_clips.append(image_clip)
 
     # Ensure clips are sorted by start time as adding them out of order can cause issues
     video_clips.sort(key=lambda clip: clip.start)
@@ -90,12 +88,6 @@ def assemble_video(background_video_path, body_text):
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio)
     final_clip.write_videofile(f"test/tiktok_final.mp4", fps=60, audio_codec='aac')
-
-    print(body_captions)
-    print()
-    print(images)
-    print()
-    print(caption_images)
 
 # Testing
 if __name__ == "__main__":
