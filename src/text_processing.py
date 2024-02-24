@@ -38,16 +38,6 @@ def generate_captions(audio_path):
                 "start": start,
                 "end": end
             }) 
-        # # Combine every word into a single caption
-        # for i in range(0, num_words):
-        #     start = words[i]["start"]
-        #     end = words[i]["end"]
-        #     text = words[i]["text"]
-        #     captions.append({
-        #         "text": text,
-        #         "start": start,
-        #         "end": end
-        #     })
 
     return captions
 

@@ -16,8 +16,8 @@ def assemble_video(background_video_path, body_text):
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
     # Convert the body text to speech and speed it up
-    # text_to_speech(body_text, "test/tiktok_normal.mp3") 
-    # speed_up_mp3("test/tiktok_normal.mp3", "test/tiktok_faster.mp3", 1.15) 
+    text_to_speech(body_text, "test/tiktok_normal.mp3") 
+    speed_up_mp3("test/tiktok_normal.mp3", "test/tiktok_faster.mp3", 1.15) 
     body_audio = AudioFileClip("test/tiktok_faster.mp3")
 
     # Initialize list to hold all video clips
@@ -26,13 +26,11 @@ def assemble_video(background_video_path, body_text):
     # Initialize list to hold all audio clips
     audio_clips = []
 
-    # # Generate image queries for the body text
-    # queries = generate_image_queries(body_text)
+    # Generate image queries for the body text
+    queries = generate_image_queries(body_text)
 
-    # # Retrieve images for the image queries
-    # images = retrieve_pixabay_images(queries)
-
-    images = [{'keyword': 'fight', 'query': 'combat', 'image_path': 'test/pixabay/combat.png'}, {'keyword': 'UFC', 'query': 'UFC', 'image_path': 'test/pixabay/UFC.png'}, {'keyword': 'illegal', 'query': 'forbidden', 'image_path': 'test/pixabay/forbidden.png'}, {'keyword': 'moves', 'query': 'martial arts', 'image_path': 'test/pixabay/martial arts.png'}, {'keyword': 'damage', 'query': 'injury', 'image_path': 'test/pixabay/injury.png'}]
+    # Retrieve images for the image queries
+    images = retrieve_pixabay_images(queries)
 
     # Calculate start and end times for each body caption chunk
     body_captions = generate_captions("test/tiktok_faster.mp3")
@@ -47,12 +45,13 @@ def assemble_video(background_video_path, body_text):
         video_clips.append(text_clip)
         # Find images that match each caption text
         for image in images:
-            if image['keyword'] in caption_text:
+            # If the keyword is in the caption text and the image has a path, add it to the list
+            if image['keyword'] in caption_text and 'image_path' in image and image['image_path']:
                 caption_images.append({
                     'start': start_time,
                     'end': end_time,
                     'text': caption_text,
-                    'image_path': image['image_path'] 
+                    'image_path': image['image_path']
                 })
                 break  # Stop after finding the first matching image
 
@@ -91,6 +90,6 @@ def assemble_video(background_video_path, body_text):
 
 # Testing
 if __name__ == "__main__":
-    background_video_path = "resources/background_videos/minecraft2.mp4"
+    background_video_path = "resources/background_videos/minecraft.mp4"
     body_text = read_text_file("test/tiktok.txt")
     assemble_video(background_video_path, body_text)

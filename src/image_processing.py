@@ -12,7 +12,7 @@ def generate_image_queries(text):
         model="gpt-4-turbo-preview",  
         response_format={ "type": "json_object" },
         messages=[
-            {"role": "system", "content": "You are a helpful assistant designed to transform a TikTok transcript by identifying key words or phrases for dynamic visual content. Create concise, 1-2 word search queries for each keyword (keyword has to be 1 word long) to find relevant Pixabay images. Aim for a varied and engaging visual flow, leveraging Pixabay's extensive library. Consider the broadness of Pixabay's image repository to maximize your query's potential. Output queries in JSON as a list of {keyword: <insert keyword>, query: <insert query>} mapped to the key 'queries', ensuring unique keys and frequent image updates to enhance the video narrative."},
+            {"role": "system", "content": "You are a helpful assistant designed to analyze a TikTok video transcript to pinpoint essential single-word keywords. For each, craft a specific Pixabay search query to visually enrich the video. Ensure these queries are brief yet effective, aiming for a diverse and visually stimulating presentation. Output a list of dictionaries in JSON, each containing 'keyword' and 'query', under the key 'queries'. Prioritize unique keywords for a dynamic image sequence to boost viewer engagement. Utilize Pixabay's wide image selection for optimal results."},
             {"role": "user", "content": "Provide a list of search queries for the following transcription text input: " + text},
         ]
     )
@@ -57,9 +57,9 @@ def retrieve_pixabay_images(queries):
                     f.write(image_data)
                 # Save the output path to the dictionary
                 query['image_path'] = output_path
-        else:
-            print(f"Failed to retrieve images. Status code: {response.status_code}")
-            return None
+        # If the request was not successful, set the image path to None
+        if 'image_path' not in query:
+            query['image_path'] = None
         
     return queries
 
@@ -71,8 +71,6 @@ if __name__ == "__main__":
 
     # Test the image query generation and retrieval
     queries = generate_image_queries(text)
-    print(queries)
-    print()
     images = retrieve_pixabay_images(queries)
     print(images)
 
