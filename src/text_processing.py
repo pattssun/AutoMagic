@@ -8,6 +8,14 @@ def read_text_file(file_path):
         text = file.read().replace('\n', ' ')
     return text
 
+def read_text_file_by_line(file_path):
+    """
+    Reads text from a file and returns a list of lines.
+    """
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = [line.strip() for line in file if line.strip()]
+    return lines
+
 def generate_captions(audio_path):
     """
     Generates 2-word captions for an audio file using the whisper library and extracting timestamps.
@@ -61,8 +69,13 @@ def transcribe_mp3(audio_path, output_path):
 
 # Example usage
 if __name__ == "__main__":
-    # Test generate_captions
-    audio_path = "test/tiktok_faster.mp3"
-    captions = generate_captions(audio_path)
-    for caption in captions:
-        print(caption['text'])
+    # # Test generate_captions
+    # audio_path = "test/tiktok_faster.mp3"
+    # captions = generate_captions(audio_path)
+    # for caption in captions:
+    #     print(caption['text'])
+
+    # Test read_text_file_by_line
+    body_text_path = "test/tiktok.txt"
+    body_text_chunks = read_text_file_by_line(body_text_path)
+    print(body_text_chunks)

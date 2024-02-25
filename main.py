@@ -1,23 +1,26 @@
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, ColorClip, concatenate_audioclips
 from src.video_processing import crop_to_916, create_text_clip_for_body, create_image_clip_for_body
 from src.audio_processing import speed_up_mp3, text_to_speech
-from src.text_processing import read_text_file, generate_captions
-from src.image_processing import generate_image_queries, retrieve_pixabay_images
+from src.text_processing import read_text_file, read_text_file_by_line, generate_captions
+from src.image_processing import generate_all_image_queries, retrieve_pixabay_images
 import random
 from datetime import datetime
 import os
 import re
 
-def assemble_video(background_video_path, body_text):
+def assemble_video(background_video_path, body_text_path):
     """
     Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
     """
+    body_text = read_text_file(body_text_path)
+    body_text_chunks = read_text_file_by_line(body_text_path)
+
     # Load the background video and crop to a 9:16 aspect ratio
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
     # Convert the body text to speech and speed it up
-    text_to_speech(body_text, "test/tiktok_normal.mp3") 
-    speed_up_mp3("test/tiktok_normal.mp3", "test/tiktok_faster.mp3", 1.15) 
+    # text_to_speech(body_text, "test/tiktok_normal.mp3") 
+    # speed_up_mp3("test/tiktok_normal.mp3", "test/tiktok_faster.mp3", 1.15) 
     body_audio = AudioFileClip("test/tiktok_faster.mp3")
 
     # Initialize list to hold all video clips
@@ -27,7 +30,7 @@ def assemble_video(background_video_path, body_text):
     audio_clips = []
 
     # Generate image queries for the body text
-    queries = generate_image_queries(body_text)
+    queries = generate_all_image_queries(body_text_chunks)
 
     # Retrieve images for the image queries
     images = retrieve_pixabay_images(queries)
@@ -91,5 +94,5 @@ def assemble_video(background_video_path, body_text):
 # Testing
 if __name__ == "__main__":
     background_video_path = "resources/background_videos/minecraft.mp4"
-    body_text = read_text_file("test/tiktok.txt")
-    assemble_video(background_video_path, body_text)
+    body_text_path = "test/tiktok.txt"
+    assemble_video(background_video_path, body_text_path)
