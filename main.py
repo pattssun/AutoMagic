@@ -19,9 +19,9 @@ def assemble_video(background_video_path, body_text_path):
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
     # Convert the body text to speech and speed it up
-    # text_to_speech(body_text, "test/tiktok_normal.mp3") 
-    # speed_up_mp3("test/tiktok_normal.mp3", "test/tiktok_faster.mp3", 1.15) 
-    body_audio = AudioFileClip("test/tiktok_faster.mp3")
+    text_to_speech(body_text, "test/tiktok_sample_normal.mp3") 
+    speed_up_mp3("test/tiktok_sample_normal.mp3", "test/tiktok_sample_faster.mp3", 1.15) 
+    body_audio = AudioFileClip("test/tiktok_sample_faster.mp3")
 
     # Initialize list to hold all video clips
     video_clips = []
@@ -36,9 +36,9 @@ def assemble_video(background_video_path, body_text_path):
     images = retrieve_pixabay_images(queries)
 
     # Calculate start and end times for each body caption chunk
-    body_captions = generate_captions("test/tiktok_faster.mp3")
+    body_captions = generate_captions("test/tiktok_sample_faster.mp3")
 
-    # Pre-process captions to map them directly to images
+    # Generate text clips for the body captions
     caption_images = []
     for caption in body_captions:
         caption_text = caption['text']
@@ -46,7 +46,7 @@ def assemble_video(background_video_path, body_text_path):
         end_time = caption['end']
         text_clip = create_text_clip_for_body(caption_text, start_time, end_time, clip_size=background_clip.size)
         video_clips.append(text_clip)
-        # Find images that match each caption text
+        # Pre-process captions to map them directly to images
         for image in images:
             # If the keyword is in the caption text and the image has a path, add it to the list
             if image['keyword'] in caption_text and 'image_path' in image and image['image_path']:
@@ -58,7 +58,7 @@ def assemble_video(background_video_path, body_text_path):
                 })
                 break  # Stop after finding the first matching image
 
-    # Now, generate the clips with optimized logic
+    # Generate image clips 
     last_image_end = 0
     for i, caption_image in enumerate(caption_images):
         # Set the start time to 0 if it's the first item; otherwise, use the last image end
@@ -94,5 +94,5 @@ def assemble_video(background_video_path, body_text_path):
 # Testing
 if __name__ == "__main__":
     background_video_path = "resources/background_videos/minecraft.mp4"
-    body_text_path = "test/tiktok.txt"
+    body_text_path = "test/tiktok_sample.txt"
     assemble_video(background_video_path, body_text_path)
