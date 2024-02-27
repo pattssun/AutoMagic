@@ -69,19 +69,11 @@ def create_image_clip_for_body(start_time, end_time, clip_size, image_path=None)
     """
     Creates a MoviePy ImageClip object for body text with an image positioned in the center upper half of the screen.
     """
-    # Load the image clip
     image_clip = ImageClip(image_path).set_duration(end_time - start_time).set_start(start_time)
-
-    # Resize image clip if necessary to fit within the clip_size while maintaining aspect ratio
-    image_clip = image_clip.resize(height=clip_size[1] * 0.25)  # Resize the image to take up to 25% of the clip height
+    image_clip = image_clip.resize(height=clip_size[1] * 0.25) 
     image_width, image_height = image_clip.size
     image_position = ((clip_size[0] - image_width) / 2, (clip_size[1] * 0.5) - image_height - (((clip_size[1] * 0.5) - image_height) / 2) - 108)  # Position at the center of the upper half
     image_clip = image_clip.set_position(image_position)
 
-    # # Zoom in on the image from a faded smaller size to the full size non-faded
-    # image_clip = image_clip.set_position(lambda t: (image_position[0] + 0.5 * t, image_position[1] + 0.5 * t)).crossfadein(image_clip.duration / 7)
-
-    # Zoom in on the image from a faded smaller size to the full size non-faded
-    image_clip = image_clip.resize(lambda t: (image_width + 100 * t, image_height + 100 * t)).crossfadein(image_clip.duration / 7)
-    
     return image_clip
+
