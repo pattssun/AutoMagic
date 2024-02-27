@@ -1,4 +1,5 @@
 from moviepy.editor import TextClip, ColorClip, CompositeVideoClip, ImageClip
+from moviepy.video.fx import resize
 
 def crop_to_916(clip):
     """
@@ -72,11 +73,16 @@ def create_image_clip_for_body(start_time, end_time, clip_size, image_path=None)
     # Load the image clip
     image_clip = ImageClip(image_path).set_duration(end_time - start_time).set_start(start_time)
     
+    # Apply fade in/out effects
+    image_clip = image_clip.fadein(0.5).fadeout(0.2)
+    
+    # Apply a zoom effect by resizing the clip dynamically
+    image_clip = image_clip.fl_time(lambda t: 1 + 0.1 * t, apply_to=['mask', 'video'])  
+
     # Resize image clip if necessary to fit within the clip_size while maintaining aspect ratio
     image_clip = image_clip.resize(height=clip_size[1] * 0.25)  # Resize the image to take up to 25% of the clip height
     image_width, image_height = image_clip.size
     image_position = ((clip_size[0] - image_width) / 2, (clip_size[1] * 0.5) - image_height - (((clip_size[1] * 0.5) - image_height) / 2) - 108)  # Position at the center of the upper half
-    
     image_clip = image_clip.set_position(image_position)
     
     return image_clip

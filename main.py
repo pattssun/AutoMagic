@@ -88,7 +88,7 @@ def assemble_video(background_video_path, body_text_path):
         raise ValueError("Background video is shorter than the combined audio duration")
 
     # Combine all clips into the final video
-    final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio)
+    final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio).set_duration(combined_audio.duration)
     final_clip.write_videofile(f"test/tiktok_final.mp4", fps=60, audio_codec='aac')
 
 # Testing
