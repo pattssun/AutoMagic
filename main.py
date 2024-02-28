@@ -8,7 +8,7 @@ from datetime import datetime
 import os
 import re
 
-def assemble_video(background_video_path, body_text_path):
+def assemble_video(project_name, background_video_path, body_text_path):
     """
     Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
     """
@@ -19,9 +19,11 @@ def assemble_video(background_video_path, body_text_path):
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
     # Convert the body text to speech and speed it up
-    text_to_speech(body_text, "test/tiktok_normal.mp3") 
-    speed_up_mp3("test/tiktok_normal.mp3", "test/tiktok_faster.mp3", 1.15) 
-    body_audio = AudioFileClip("test/tiktok_faster.mp3")
+    normal_path = f"{project_name}_normal.mp3"
+    faster_path = f"{project_name}_faster.mp3"
+    text_to_speech(body_text, f"test/{normal_path}") 
+    speed_up_mp3(f"test/{normal_path}", f"test/{faster_path}", 1.15) 
+    body_audio = AudioFileClip(f"test/{faster_path}")
 
     # Initialize list to hold all video clips
     video_clips = []
@@ -36,7 +38,7 @@ def assemble_video(background_video_path, body_text_path):
     images = retrieve_pixabay_images(queries)
 
     # Calculate start and end times for each body caption chunk
-    body_captions = generate_captions("test/tiktok_faster.mp3")
+    body_captions = generate_captions(f"test/{faster_path}")
 
     # Generate text clips for the body captions
     caption_images = []
@@ -89,7 +91,7 @@ def assemble_video(background_video_path, body_text_path):
 
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio).set_duration(combined_audio.duration)
-    final_clip.write_videofile(f"test/tiktok_final.mp4", fps=60, audio_codec='aac')
+    final_clip.write_videofile(f"test/{project_name}_final.mp4", fps=60, audio_codec='aac')
 
     # Remove all files in test/pixabay
     for file in os.listdir("test/pixabay"):
@@ -97,6 +99,7 @@ def assemble_video(background_video_path, body_text_path):
 
 # Testing
 if __name__ == "__main__":
+    project_name = "tiktok"
     background_video_path = "resources/background_videos/minecraft.mp4"
-    body_text_path = "test/tiktok.txt"
-    assemble_video(background_video_path, body_text_path)
+    body_text_path = f"test/{project_name}.txt"
+    assemble_video(project_name, background_video_path, body_text_path)
