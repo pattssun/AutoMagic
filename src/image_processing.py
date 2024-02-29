@@ -13,7 +13,7 @@ def generate_image_queries(text):
         model="gpt-4-turbo-preview",  
         response_format={ "type": "json_object" },
         messages=[
-            {"role": "system", "content": "Analyze a TikTok video transcript to pinpoint essential single-word keywords. For each, craft a specific Pixabay search query to visually enrich the video. Ensure these queries are brief yet effective, aiming for a diverse and visually stimulating presentation. Output a list of dictionaries in JSON, each containing 'keyword' and 'query', under the key 'queries'. Prioritize unique keywords for a dynamic image sequence to boost viewer engagement. Utilize Pixabay's wide image selection for optimal results."},
+            {"role": "system", "content": "Leverage NLP techniques to dissect a TikTok transcript into fundamental elements—nouns, verbs, and adjectives. From these, extract singular, impactful keywords. For each, craft a specific Pixabay search query to visually enrich the video. Ensure these queries are brief yet effective, aiming for a diverse and visually stimulating presentation. Prioritize unique keywords for a dynamic image sequence to boost viewer engagement. Output a list of dictionaries in JSON, each containing 'keyword' and 'query', under the key 'queries'. "},
             {"role": "user", "content": "Provide a list of search queries for the following transcription text input: " + text},
         ]
     )
@@ -82,10 +82,12 @@ if __name__ == "__main__":
     body_text_chunks = read_text_file_by_line("test/tiktok.txt")
 
     # Test the image query generation and retrieval
-    queries = generate_all_image_queries(body_text_chunks)
-    print(queries)
-    print()
+    queries = generate_image_queries(text2)
     print(f"Queries generated: {len(queries)}")
     images = retrieve_pixabay_images(queries)
     print()
     print(images)
+
+    # # Remove all files in test/pixabay
+    # for file in os.listdir("test/pixabay"):
+    #     os.remove(f"test/pixabay/{file}")

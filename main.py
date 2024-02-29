@@ -22,7 +22,7 @@ def assemble_video(project_name, background_video_path, body_text_path):
     normal_path = f"{project_name}_normal.mp3"
     faster_path = f"{project_name}_faster.mp3"
     text_to_speech(body_text, f"test/{normal_path}") 
-    speed_up_mp3(f"test/{normal_path}", f"test/{faster_path}", 1.15) 
+    speed_up_mp3(f"test/{normal_path}", f"test/{faster_path}", 1.25) 
     body_audio = AudioFileClip(f"test/{faster_path}")
 
     # Initialize list to hold all video clips
