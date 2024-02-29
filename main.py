@@ -1,4 +1,4 @@
-from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, ColorClip, concatenate_audioclips
+from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip, ColorClip, concatenate_audioclips, ImageClip
 from src.video_processing import crop_to_916, create_text_clip_for_body, create_image_clip_for_body
 from src.audio_processing import speed_up_mp3, text_to_speech
 from src.text_processing import read_text_file, read_text_file_by_line, generate_captions
@@ -8,7 +8,7 @@ from datetime import datetime
 import os
 import re
 
-def assemble_video(project_name, background_video_path, body_text_path):
+def assemble_video(project_name, background_video_path, voice, body_text_path):
     """
     Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
     """
@@ -21,9 +21,9 @@ def assemble_video(project_name, background_video_path, body_text_path):
     # Convert the body text to speech and speed it up
     normal_path = f"{project_name}_normal.mp3"
     faster_path = f"{project_name}_faster.mp3"
-    # text_to_speech(body_text, f"test/{normal_path}") 
-    # speed_up_mp3(f"test/{normal_path}", f"test/{faster_path}", 1.25) 
-    body_audio = AudioFileClip(f"test/{faster_path}")
+    text_to_speech(body_text, voice, f"test/{normal_path}") 
+    # speed_up_mp3(f"test/{normal_path}", f"test/{faster_path}", 1.15) 
+    body_audio = AudioFileClip(f"test/{normal_path}")
 
     # Initialize list to hold all video clips
     video_clips = []
@@ -38,7 +38,7 @@ def assemble_video(project_name, background_video_path, body_text_path):
     images = retrieve_pixabay_images(queries)
 
     # Calculate start and end times for each body caption chunk
-    body_captions = generate_captions(f"test/{faster_path}")
+    body_captions = generate_captions(f"test/{normal_path}")
 
     # Generate text clips for the body captions
     caption_images = []
@@ -75,6 +75,10 @@ def assemble_video(project_name, background_video_path, body_text_path):
     # Ensure clips are sorted by start time as adding them out of order can cause issues
     video_clips.sort(key=lambda clip: clip.start)
 
+    # Add image clips to the video clips list
+    ricky_image_clip = ImageClip('test/Rick.png').set_duration(last_image_end - body_captions[0]['start']).set_start(body_captions[0]['start']).set_position(('center', 'bottom'))
+    video_clips.append(ricky_image_clip)
+
     # Combine the title audio and body audio
     combined_audio = concatenate_audioclips(audio_clips + [body_audio])
 
@@ -93,13 +97,16 @@ def assemble_video(project_name, background_video_path, body_text_path):
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=background_clip.size).set_audio(combined_audio).set_duration(combined_audio.duration)
     final_clip.write_videofile(f"test/{project_name}_final.mp4", fps=60, audio_codec='aac')
 
-    # Remove all files in test/pixabay
-    for file in os.listdir("test/pixabay"):
-        os.remove(f"test/pixabay/{file}")
+    # # Remove all files in test/pixabay
+    # for file in os.listdir("test/pixabay"):
+    #     os.remove(f"test/pixabay/{file}")
 
 # Testing
 if __name__ == "__main__":
-    project_name = "tiktok"
+    project_name = "tiktok_sample"
     background_video_path = "resources/background_videos/minecraft.mp4"
+    ricky_ID = "F7GmQe0BY7nlHiDzHStR"
+    morty_ID = "8ywemhKnE8RrczyytVz1"
+    voice = ricky_ID
     body_text_path = f"test/{project_name}.txt"
-    assemble_video(project_name, background_video_path, body_text_path)
+    assemble_video(project_name, background_video_path, voice, body_text_path)
