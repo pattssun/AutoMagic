@@ -90,9 +90,6 @@ def assemble_video(project_name, background_video_path, voices, text_path):
 
     print("video_clips: Completed.\n")
 
-    # # Combine the title audio and audio
-    # combined_audio = concatenate_audioclips(audio_clips + [audio])
-
     # Load the background video and crop to a 9:16 aspect ratio
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
