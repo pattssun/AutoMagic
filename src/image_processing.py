@@ -59,7 +59,7 @@ def retrieve_pixabay_images(queries):
             data = response.json()
             
             # Save first image from the URL as a PNG file
-            output_path = f"test/pixabay/{query['query']}.png"
+            output_path = f"test/image_files/{query['query']}.png"
             if data['hits']:
                 image_url = data['hits'][0]['webformatURL']
                 image_data = requests.get(image_url).content
@@ -88,6 +88,6 @@ if __name__ == "__main__":
     print()
     print(images)
 
-    # # Remove all files in test/pixabay
-    # for file in os.listdir("test/pixabay"):
-    #     os.remove(f"test/pixabay/{file}")
+    # # Remove all files in test/image_files
+    # for file in os.listdir("test/image_files"):
+    #     os.remove(f"test/image_files/{file}")

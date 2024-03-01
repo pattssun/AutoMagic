@@ -4,27 +4,53 @@ from pydub import AudioSegment
 from elevenlabs import set_api_key, generate, save, Voice, VoiceSettings
 from gtts import gTTS
 
-def text_to_speech(text, voices, output_path):
+def text_to_speech(text_chunks, voices, project_name, audio_normal_path):
     """
-    Converts text to speech using the Eleven API and saves the audio to a mp3 file.
+    Converts a list of text chunks to speech, saves the audio files, and calculates their start and end times.
     """
     # Retrieve API key
     load_dotenv()
     xi_api_key = os.getenv('xi_api_key')
     set_api_key(xi_api_key)
 
-    ricky_id = voices["ricky_id"]
-    morty_id = voices["morty_id"]
+    combined_audio = AudioSegment.empty()
+    output = []
+    total_duration = 0  # Keep track of the cumulative duration
 
-    # Generate speech using the Eleven API and save the audio to a mp3 file
-    audio = generate(
-        text = text, 
-        voice = Voice(
-            voice_id=ricky_id,
-            settings=VoiceSettings(stability=0.45, similarity_boost=0.75, style=0.05, use_speaker_boost=True)
+    for i, text_chunk in enumerate(text_chunks):
+        # Alternate voices between chunks
+        voice = voices["rick"] if i % 2 == 0 else voices["morty"]
+        audio = generate(
+            text=text_chunk, 
+            voice=Voice(
+                voice_id=voice,
+                settings=VoiceSettings(stability=0.45, similarity_boost=0.75, style=0.05, use_speaker_boost=True)
+            )
         )
-    )
-    save(audio, output_path)
+        audio_path = f"test/audio_files/{i}.mp3"
+        save(audio, audio_path)
+
+        # Load the audio file as a pydub AudioSegment
+        audio_segment = AudioSegment.from_file(audio_path, format="mp3")
+
+        # Calculate the duration of the generated audio segment
+        audio_duration = len(audio_segment)
+
+        # Append the audio segment to the combined audio
+        combined_audio += audio_segment
+
+        # Assign start and end times based on the duration
+        start_time = total_duration / 1000.0  # Convert milliseconds to seconds
+        end_time = (total_duration + audio_duration) / 1000.0
+        total_duration += audio_duration  # Update the cumulative duration
+        
+        output.append({"voice_id": voice, "audio_path": audio_path, "start": start_time, "end": end_time})
+
+    # Save the combined audio to a file
+    combined_audio_path = f"test/audio_files/{audio_normal_path}"
+    combined_audio.export(combined_audio_path, format="mp3")
+
+    return output
 
 # def text_to_speech(text, output_filename):
 #     """
