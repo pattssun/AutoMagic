@@ -4,7 +4,7 @@ from pydub import AudioSegment
 from elevenlabs import set_api_key, generate, save, Voice, VoiceSettings
 from gtts import gTTS
 
-def text_to_speech(text, voice, output_path):
+def text_to_speech(text, voices, output_path):
     """
     Converts text to speech using the Eleven API and saves the audio to a mp3 file.
     """
@@ -13,11 +13,14 @@ def text_to_speech(text, voice, output_path):
     xi_api_key = os.getenv('xi_api_key')
     set_api_key(xi_api_key)
 
+    ricky_id = voices["ricky_id"]
+    morty_id = voices["morty_id"]
+
     # Generate speech using the Eleven API and save the audio to a mp3 file
     audio = generate(
         text = text, 
         voice = Voice(
-            voice_id=voice,
+            voice_id=ricky_id,
             settings=VoiceSettings(stability=0.45, similarity_boost=0.75, style=0.05, use_speaker_boost=True)
         )
     )

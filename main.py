@@ -8,7 +8,7 @@ from datetime import datetime
 import os
 import re
 
-def assemble_video(project_name, background_video_path, voice, text_path):
+def assemble_video(project_name, background_video_path, voices, text_path):
     """
     Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
     """
@@ -21,7 +21,7 @@ def assemble_video(project_name, background_video_path, voice, text_path):
     # Convert the text to speech and speed it up
     normal_path = f"{project_name}_normal.mp3"
     faster_path = f"{project_name}_faster.mp3"
-    text_to_speech(text, voice, f"test/{normal_path}") 
+    text_to_speech(text, voices, f"test/{normal_path}") 
     # speed_up_mp3(f"test/{normal_path}", f"test/{faster_path}", 1.15) 
     audio = AudioFileClip(f"test/{normal_path}")
 
@@ -105,11 +105,9 @@ def assemble_video(project_name, background_video_path, voice, text_path):
 if __name__ == "__main__":
     project_name = "tiktok"
     background_video_path = "resources/background_videos/minecraft.mp4"
-    ricky_ID = "F7GmQe0BY7nlHiDzHStR"
-    morty_ID = "8ywemhKnE8RrczyytVz1"
-    voice = [ricky_ID, morty_ID]
+    voices = {"ricky_id":"F7GmQe0BY7nlHiDzHStR", "morty_id":"8ywemhKnE8RrczyytVz1"}
     text_path = f"test/{project_name}.txt"
-    assemble_video(project_name, background_video_path, voice, text_path)
+    assemble_video(project_name, background_video_path, voices, text_path)
 
 
 """
