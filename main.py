@@ -8,22 +8,22 @@ from datetime import datetime
 import os
 import re
 
-def assemble_video(project_name, background_video_path, voice, body_text_path):
+def assemble_video(project_name, background_video_path, voice, text_path):
     """
     Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
     """
-    body_text = read_text_file(body_text_path)
-    body_text_chunks = read_text_file_by_line(body_text_path)
+    text = read_text_file(text_path)
+    text_chunks = read_text_file_by_line(text_path)
 
     # Load the background video and crop to a 9:16 aspect ratio
     background_clip = crop_to_916(VideoFileClip(background_video_path))
 
-    # Convert the body text to speech and speed it up
+    # Convert the text to speech and speed it up
     normal_path = f"{project_name}_normal.mp3"
     faster_path = f"{project_name}_faster.mp3"
-    text_to_speech(body_text, voice, f"test/{normal_path}") 
+    text_to_speech(text, voice, f"test/{normal_path}") 
     # speed_up_mp3(f"test/{normal_path}", f"test/{faster_path}", 1.15) 
-    body_audio = AudioFileClip(f"test/{normal_path}")
+    audio = AudioFileClip(f"test/{normal_path}")
 
     # Initialize list to hold all video clips
     video_clips = []
@@ -31,18 +31,18 @@ def assemble_video(project_name, background_video_path, voice, body_text_path):
     # Initialize list to hold all audio clips
     audio_clips = []
 
-    # Generate image queries for the body text
-    queries = generate_all_image_queries(body_text_chunks)
+    # Generate image queries for the text
+    queries = generate_all_image_queries(text_chunks)
 
     # Retrieve images for the image queries
     images = retrieve_pixabay_images(queries)
 
-    # Calculate start and end times for each body caption chunk
-    body_captions = generate_captions(f"test/{normal_path}")
+    # Calculate start and end times for each caption chunk
+    captions = generate_captions(f"test/{normal_path}")
 
-    # Generate text clips for the body captions
+    # Generate text clips for the captions
     caption_images = []
-    for caption in body_captions:
+    for caption in captions:
         caption_text = caption['text']
         start_time = caption['start'] 
         end_time = caption['end']
@@ -64,7 +64,7 @@ def assemble_video(project_name, background_video_path, voice, body_text_path):
     last_image_end = 0
     for i, caption_image in enumerate(caption_images):
         # Set the start time to 0 if it's the first item; otherwise, use the last image end
-        start_time = body_captions[0]['start'] if i == 0 else last_image_end
+        start_time = captions[0]['start'] if i == 0 else last_image_end
         # If this isn't the last item, set the end time to the start of the next item; otherwise, use the caption end
         end_time = caption_images[i + 1]['start'] if i + 1 < len(caption_images) else caption_image['end']
         last_image_end = max(last_image_end, end_time)  # Update the last image end time
@@ -76,11 +76,11 @@ def assemble_video(project_name, background_video_path, voice, body_text_path):
     video_clips.sort(key=lambda clip: clip.start)
 
     # Add image clips to the video clips list
-    ricky_image_clip = ImageClip('test/Rick.png').set_duration(last_image_end - body_captions[0]['start']).set_start(body_captions[0]['start']).set_position(('center', 'bottom'))
+    ricky_image_clip = ImageClip('test/Rick.png').set_duration(last_image_end - captions[0]['start']).set_start(captions[0]['start']).set_position(('center', 'bottom'))
     video_clips.append(ricky_image_clip)
 
-    # Combine the title audio and body audio
-    combined_audio = concatenate_audioclips(audio_clips + [body_audio])
+    # Combine the title audio and audio
+    combined_audio = concatenate_audioclips(audio_clips + [audio])
 
     # Select a random start time for the background video
     # If the background video is longer than the total content duration, select a random start time
@@ -107,6 +107,15 @@ if __name__ == "__main__":
     background_video_path = "resources/background_videos/minecraft.mp4"
     ricky_ID = "F7GmQe0BY7nlHiDzHStR"
     morty_ID = "8ywemhKnE8RrczyytVz1"
-    voice = ricky_ID
-    body_text_path = f"test/{project_name}.txt"
-    assemble_video(project_name, background_video_path, voice, body_text_path)
+    voice = [ricky_ID, morty_ID]
+    text_path = f"test/{project_name}.txt"
+    assemble_video(project_name, background_video_path, voice, text_path)
+
+
+"""
+Inputs:
+- project_name
+- background_video_path
+- voices
+- text_path
+"""
