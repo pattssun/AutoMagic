@@ -4,7 +4,7 @@ from pydub import AudioSegment
 from elevenlabs import set_api_key, generate, save, Voice, VoiceSettings
 from gtts import gTTS
 
-def text_to_speech(text_chunks, voices, project_name, audio_normal_path):
+def text_to_speech(text_chunks, voices, audio_filename):
     """
     Converts a list of text chunks to speech, saves the audio files, and calculates their start and end times.
     """
@@ -47,7 +47,7 @@ def text_to_speech(text_chunks, voices, project_name, audio_normal_path):
         output.append({"voice_id": voice, "audio_path": audio_path, "start": start_time, "end": end_time})
 
     # Save the combined audio to a file
-    combined_audio_path = f"test/audio_files/{audio_normal_path}"
+    combined_audio_path = f"test/audio_files/{audio_filename}"
     combined_audio.export(combined_audio_path, format="mp3")
 
     return output

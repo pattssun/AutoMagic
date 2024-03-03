@@ -8,39 +8,34 @@ from datetime import datetime
 import os
 import re
 
-def assemble_video(project_name, background_video_path, voices, text_path):
+def assemble_video(project_name, text_path, background_video_path, voices):
     """
     Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
     """
     # Load the text and split it into chunks
     text = read_text_file(text_path)
     text_chunks = read_text_file_by_line(text_path)
-
     print("text_chunks: Completed.\n")
 
-    # Convert the text to speech and speed it up
-    audio_normal_path = f"{project_name}_normal.mp3"
-    # audio_faster_path = f"{project_name}_faster.mp3"
-    audio_sequences = text_to_speech(text_chunks, voices, project_name, audio_normal_path)
-
+    # Generate audio sequences for the text chunks and combine them into a single audio file
+    audio_filename = f"{project_name}_normal.mp3"
+    audio_sequences = text_to_speech(text_chunks, voices, audio_filename)
     print("audio_sequences: Completed.\n")
 
-    # speed_up_mp3(f"test/{audio_normal_path}", f"test/audio_files/{audio_faster_path}", 1.15) 
-    audio_full = AudioFileClip(f"test/audio_files/{audio_normal_path}")
-
+    # Load the full audio file
+    audio_full = AudioFileClip(f"test/audio_files/{audio_filename}")
     print("audio_full: Completed.\n")
 
     # Generate image queries for the text
     queries = generate_all_image_queries(text_chunks)
+    print("queries: Completed.\n")
 
     # Retrieve images for the image queries
     images = retrieve_pixabay_images(queries)
-
     print("images: Completed.\n")
 
     # Calculate start and end times for each caption chunk
-    captions = generate_captions(f"test/audio_files/{audio_normal_path}")
-
+    captions = generate_captions(f"test/audio_files/{audio_filename}")
     print("captions: Completed.\n")
 
     # Initialize lists to hold all video clips
@@ -84,10 +79,9 @@ def assemble_video(project_name, background_video_path, voices, text_path):
     # Add character images to the video
     for i, audio_sequence in enumerate(audio_sequences):
         # Alternate between Rick and Morty images
-        image_path = "test/Rick.png" if audio_sequence["voice_id"] == voices["rick"] else "test/Morty.png"
+        image_path = "test/images_files/Rick.png" if audio_sequence["voice_id"] == voices["rick"] else "test/images_files/Morty.png"
         image_clip = ImageClip(image_path).set_duration(audio_sequence['end'] - audio_sequence['start']).set_start(audio_sequence['start']).set_position(('center', 'bottom'))
         video_clips.append(image_clip)
-
     print("video_clips: Completed.\n")
 
     # Load the background video and crop to a 9:16 aspect ratio
@@ -116,6 +110,6 @@ if __name__ == "__main__":
     project_name = "tiktok_sample"
     background_video_path = "resources/background_videos/minecraft.mp4"
     voices = {"rick":"F7GmQe0BY7nlHiDzHStR", "morty":"8ywemhKnE8RrczyytVz1"}
-    text_path = f"test/{project_name}.txt"
-    assemble_video(project_name, background_video_path, voices, text_path)
+    text_path = f"test/text_files/{project_name}.txt"
+    assemble_video(project_name, text_path, background_video_path, voices)
 
