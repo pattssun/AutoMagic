@@ -12,6 +12,9 @@ def assemble_video(project_name, text_path, background_video_path, voices):
     """
     Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
     """
+    # Time total execution of the function
+    start_time = datetime.now()
+
     # Load the text and split it into chunks
     text = read_text_file(text_path)
     text_chunks = read_text_file_by_line(text_path)
@@ -102,16 +105,20 @@ def assemble_video(project_name, text_path, background_video_path, voices):
 
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=((1080, 1920))).set_audio(audio_full).set_duration(audio_full.duration)
-    final_clip.write_videofile(f"test/{project_name}_final4.mp4", fps=60, audio_codec='aac')
+    final_clip.write_videofile(f"test/{project_name}_final2.mp4", fps=60, audio_codec='aac')
 
     # Remove all files in test/image_files
     for file in os.listdir("test/image_files"):
         os.remove(f"test/image_files/{file}")
 
+    # Time total execution of the function
+    end_time = datetime.now()
+    print(f"Execution time: {end_time - start_time}")
+
 # Testing
 if __name__ == "__main__":
-    # project_name = "tiktok_sample"
-    # text_path = f"test/text_files/{project_name}.txt"
-    # background_video_path = "resources/background_videos/minecraft.mp4"
-    # voices = {"rick":"F7GmQe0BY7nlHiDzHStR", "morty":"8ywemhKnE8RrczyytVz1"}
-    # assemble_video(project_name, text_path, background_video_path, voices)
+    project_name = "tiktok_sample"
+    text_path = f"test/text_files/{project_name}.txt"
+    background_video_path = "resources/background_videos/minecraft.mp4"
+    voices = {"rick":"F7GmQe0BY7nlHiDzHStR", "morty":"8ywemhKnE8RrczyytVz1"}
+    assemble_video(project_name, text_path, background_video_path, voices)

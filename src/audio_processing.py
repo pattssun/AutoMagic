@@ -25,7 +25,7 @@ def text_to_speech(text_chunks, voices, output_filename):
                 settings=VoiceSettings(stability=0.45, similarity_boost=0.75, style=0.05, use_speaker_boost=True)
             )
         )
-        audio_path = f"test/audio_files/{i}.mp3"
+        audio_path = f"test/audio_files/{output_filename} ({i}).mp3"
         save(audio, audio_path)
 
         # Load the audio file as a pydub AudioSegment
