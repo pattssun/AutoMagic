@@ -6,6 +6,9 @@ import json
 from src.text_processing import read_text_file, read_text_file_by_line
 
 def generate_image_queries(text):
+    """
+    Output: [{'keyword': <>, 'query':<>} for each keyword in the text]
+    """
     load_dotenv()
     client = OpenAI(api_key=os.getenv('openai_api_key'))
 
@@ -23,6 +26,9 @@ def generate_image_queries(text):
     return answer['queries']
 
 def generate_all_image_queries(body_text_chunks):
+    """
+    Output: [[{'keyword': <>, 'query':<>}] for each chunk in body_text_chunks]
+    """
     all_queries = []
     
     for chunk in body_text_chunks:
@@ -32,7 +38,9 @@ def generate_all_image_queries(body_text_chunks):
     return all_queries
 
 def retrieve_pixabay_images(queries):
-    """Retrieve image on Pixabay based on a query."""
+    """
+    Output: [{'keyword': <>, 'query':<>, 'image_path':<>} for each query in queries]
+    """
     # Retrieve API key
     load_dotenv()
     pixabay_api_key = os.getenv('pixabay_api_key')

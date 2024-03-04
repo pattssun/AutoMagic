@@ -4,19 +4,17 @@ from pydub import AudioSegment
 from elevenlabs import set_api_key, generate, save, Voice, VoiceSettings
 from gtts import gTTS
 
-def text_to_speech(text_chunks, voices, audio_filename):
+def text_to_speech(text_chunks, voices, output_filename):
     """
-    Converts a list of text chunks to speech, saves the audio files, and calculates their start and end times.
+    Converts text to an audio file using the Eleven Labs API.
     """
-    # Retrieve API key
     load_dotenv()
     xi_api_key = os.getenv('xi_api_key')
     set_api_key(xi_api_key)
 
-    combined_audio = AudioSegment.empty()
     output = []
-    total_duration = 0  # Keep track of the cumulative duration
-
+    combined_audio = AudioSegment.empty()
+    total_duration = 0  
     for i, text_chunk in enumerate(text_chunks):
         # Alternate voices between chunks
         voice = voices["rick"] if i % 2 == 0 else voices["morty"]
@@ -44,10 +42,11 @@ def text_to_speech(text_chunks, voices, audio_filename):
         end_time = (total_duration + audio_duration) / 1000.0
         total_duration += audio_duration  # Update the cumulative duration
         
+        # Append the voice ID, audio path, and start and end times to the output list
         output.append({"voice_id": voice, "audio_path": audio_path, "start": start_time, "end": end_time})
 
     # Save the combined audio to a file
-    combined_audio_path = f"test/audio_files/{audio_filename}"
+    combined_audio_path = f"test/audio_files/{output_filename}"
     combined_audio.export(combined_audio_path, format="mp3")
 
     return output
