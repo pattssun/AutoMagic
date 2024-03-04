@@ -104,15 +104,14 @@ def assemble_video(project_name, text_path, background_video_path, voices):
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=((1080, 1920))).set_audio(audio_full).set_duration(audio_full.duration)
     final_clip.write_videofile(f"test/{project_name}_final4.mp4", fps=60, audio_codec='aac')
 
-    # # Remove all files in test/image_files
-    # for file in os.listdir("test/image_files"):
-    #     os.remove(f"test/image_files/{file}")
+    # Remove all files in test/image_files
+    for file in os.listdir("test/image_files"):
+        os.remove(f"test/image_files/{file}")
 
 # Testing
 if __name__ == "__main__":
-    project_name = "tiktok_sample"
-    text_path = f"test/text_files/{project_name}.txt"
-    background_video_path = "resources/background_videos/minecraft.mp4"
-    voices = {"rick":"F7GmQe0BY7nlHiDzHStR", "morty":"8ywemhKnE8RrczyytVz1"}
-    assemble_video(project_name, text_path, background_video_path, voices)
-
+    # project_name = "tiktok_sample"
+    # text_path = f"test/text_files/{project_name}.txt"
+    # background_video_path = "resources/background_videos/minecraft.mp4"
+    # voices = {"rick":"F7GmQe0BY7nlHiDzHStR", "morty":"8ywemhKnE8RrczyytVz1"}
+    # assemble_video(project_name, text_path, background_video_path, voices)
