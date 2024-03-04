@@ -15,7 +15,6 @@ def assemble_video(project_name, text_path, background_video_path, voices):
     # Load the text and split it into chunks
     text = read_text_file(text_path)
     text_chunks = read_text_file_by_line(text_path)
-    print("text_chunks: Completed.\n")
     print("(1) text_chunks: Completed.\n")
 
     # Generate audio chunks for the text chunks and combine them into a single audio file
