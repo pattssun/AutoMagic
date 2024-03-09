@@ -31,7 +31,7 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
     print(f"queries for {current_text_file_dir} - {account}: Completed.\n")
 
     # Retrieve images for the image queries
-    images = retrieve_pixabay_images(queries, dir_path=f"dates/{today_date}/{current_text_file_dir}")
+    images = retrieve_pixabay_images(queries, dir_path=f"projects/{today_date}/{current_text_file_dir}")
     print(f"images for {current_text_file_dir} - {account}: Completed.\n")
 
     # Generate audio chunks for the text chunks and combine them into a single audio file
@@ -43,7 +43,7 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
             character_voice_ids.append(character["voice_id"])
             character_image_paths.append(character["image_path"])
 
-        audio_path = f"dates/{today_date}/{current_text_file_dir}/{account}/audio.mp3"
+        audio_path = f"projects/{today_date}/{current_text_file_dir}/{account}/audio.mp3"
         audio_chunks = text_to_speech(text_chunks, character_voice_ids, output_path=audio_path)
         audio_full = AudioFileClip(audio_path)
         print(f"audio_chunks and audio_full for {current_text_file_dir} - {account}: Completed.\n")
@@ -116,15 +116,15 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
 
         # Combine all clips into the final video
         final_clip = CompositeVideoClip([background_clip] + video_clips, size=((1080, 1920))).set_audio(audio_full).set_duration(audio_full.duration)
-        final_clip.write_videofile(f"dates/{today_date}/{current_text_file_dir}/output/{account}.mp4", fps=60, audio_codec='aac')
+        final_clip.write_videofile(f"projects/{today_date}/{current_text_file_dir}/output/{account}.mp4", fps=60, audio_codec='aac')
 
         # # Remove all files in image_files
-        # for file in os.listdir(f"dates/{today_date}/{current_text_file_dir}/image_files"):
-        #     os.remove(f"dates/{today_date}/{current_text_file_dir}/image_files/{file}")
+        # for file in os.listdir(f"projects/{today_date}/{current_text_file_dir}/image_files"):
+        #     os.remove(f"projects/{today_date}/{current_text_file_dir}/image_files/{file}")
 
         # # Remove all files in audio_files
-        # for file in os.listdir(f"dates/{today_date}/{current_text_file_dir}/{account}"):
-        #     os.remove(f"dates/{today_date}/{current_text_file_dir}/{account}/{file}")
+        # for file in os.listdir(f"projects/{today_date}/{current_text_file_dir}/{account}"):
+        #     os.remove(f"projects/{today_date}/{current_text_file_dir}/{account}/{file}")
 
         # Time total execution of the function
         end_time = datetime.now()
@@ -166,8 +166,8 @@ if __name__ == "__main__":
         }
     }
     background_video_path = "resources/background_videos/minecraft.mp4"
-    for dir in os.listdir(f"dates/{today_date}"):
-        for file in os.listdir(f"dates/{today_date}/{dir}"):
+    for dir in os.listdir(f"projects/{today_date}"):
+        for file in os.listdir(f"projects/{today_date}/{dir}"):
             if file.endswith(".txt"):
-                text_path = f"dates/{today_date}/{dir}/{file}"
+                text_path = f"projects/{today_date}/{dir}/{file}"
                 assemble_video(today_date, accounts, background_video_path, text_path)
