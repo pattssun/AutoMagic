@@ -85,7 +85,7 @@ def assemble_video(project_name, text_path, background_video_path, voices):
         # Alternate between Rick and Morty 
         start_time = audio_chunk['start']
         end_time = audio_chunk['end']
-        image_path = "test/Rick.png" if audio_chunk["voice_id"] == voices["rick"] else "test/Morty.png"
+        image_path = "test/Rick2.png" if audio_chunk["voice_id"] == voices["rick"] else "test/Morty2.png"
         image_clip = ImageClip(image_path).set_duration(end_time - start_time).set_start(start_time).set_position(('center', 'bottom'))
         video_clips.append(image_clip)
     print("(6) video_clips: Completed.\n")
