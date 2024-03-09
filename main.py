@@ -17,6 +17,9 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
 
     # Get the current text file directory
     current_text_file_dir = text_path.split('/')[2]
+    # Verify that current_text_file_dir is a number between 1-3
+    if not re.match(r'^[1-3]$', current_text_file_dir):
+        raise ValueError("The current_text_file_dir is not a number between 1-3")
 
     # Load the text and split it into chunks
     text = read_text_file(text_path)
