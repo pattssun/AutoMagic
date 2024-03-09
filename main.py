@@ -23,12 +23,12 @@ def assemble_video(project_name, text_path, background_video_path, voices):
     # Generate audio chunks for the text chunks and combine them into a single audio file
     audio_filename = f"{project_name}_normal.mp3"
     # audio_chunks = text_to_speech(text_chunks, voices, output_filename=audio_filename)
-    audio_chunks = [{'voice_id': 'F7GmQe0BY7nlHiDzHStR', 'audio_path': 'test/audio_files/0.mp3', 'start': 0.0, 'end': 4.859}, {'voice_id': '8ywemhKnE8RrczyytVz1', 'audio_path': 'test/audio_files/1.mp3', 'start': 4.859, 'end': 6.296}, {'voice_id': 'F7GmQe0BY7nlHiDzHStR', 'audio_path': 'test/audio_files/2.mp3', 'start': 6.296, 'end': 12.174}]
-    audio_full = AudioFileClip(f"test/audio_files/{audio_filename}")
+    audio_chunks = [{'voice_id': 'F7GmQe0BY7nlHiDzHStR', 'audio_path': 'dates/audio_files/0.mp3', 'start': 0.0, 'end': 4.859}, {'voice_id': '8ywemhKnE8RrczyytVz1', 'audio_path': 'dates/audio_files/1.mp3', 'start': 4.859, 'end': 6.296}, {'voice_id': 'F7GmQe0BY7nlHiDzHStR', 'audio_path': 'dates/audio_files/2.mp3', 'start': 6.296, 'end': 12.174}]
+    audio_full = AudioFileClip(f"dates/audio_files/{audio_filename}")
     print("(2) audio_chunks and audio_full: Completed.\n")
 
     # Calculate start and end times for each caption chunk
-    captions = generate_captions(f"test/audio_files/{audio_filename}")
+    captions = generate_captions(f"dates/audio_files/{audio_filename}")
     print("(3) captions: Completed.\n")
 
     # Generate image queries for the text
@@ -85,7 +85,7 @@ def assemble_video(project_name, text_path, background_video_path, voices):
         # Alternate between Rick and Morty 
         start_time = audio_chunk['start']
         end_time = audio_chunk['end']
-        image_path = "test/Rick2.png" if audio_chunk["voice_id"] == voices["rick"] else "test/Morty2.png"
+        image_path = "resources/character_images/Rick2.png" if audio_chunk["voice_id"] == voices["rick"] else "resources/character_images/Morty2.png"
         image_clip = ImageClip(image_path).set_duration(end_time - start_time).set_start(start_time).set_position(('center', 'bottom'))
         video_clips.append(image_clip)
     print("(6) video_clips: Completed.\n")
@@ -105,11 +105,11 @@ def assemble_video(project_name, text_path, background_video_path, voices):
 
     # Combine all clips into the final video
     final_clip = CompositeVideoClip([background_clip] + video_clips, size=((1080, 1920))).set_audio(audio_full).set_duration(audio_full.duration)
-    final_clip.write_videofile(f"test/{project_name}_final2.mp4", fps=60, audio_codec='aac')
+    final_clip.write_videofile(f"dates/{project_name}_final2.mp4", fps=60, audio_codec='aac')
 
-    # Remove all files in test/image_files
-    for file in os.listdir("test/image_files"):
-        os.remove(f"test/image_files/{file}")
+    # Remove all files in dates/image_files
+    for file in os.listdir("dates/image_files"):
+        os.remove(f"dates/image_files/{file}")
 
     # Time total execution of the function
     end_time = datetime.now()
@@ -117,8 +117,10 @@ def assemble_video(project_name, text_path, background_video_path, voices):
 
 # Testing
 if __name__ == "__main__":
+    today_date = datetime.today().strftime('%Y-%m-%d')
     project_name = "tiktok_sample"
-    text_path = f"test/text_files/{project_name}.txt"
+    text_path = f"dates/text_files/{project_name}.txt"
+    characters = ["rick", "morty"]
     background_video_path = "resources/background_videos/minecraft.mp4"
     voices = {"rick":"F7GmQe0BY7nlHiDzHStR", "morty":"8ywemhKnE8RrczyytVz1"}
     assemble_video(project_name, text_path, background_video_path, voices)
