@@ -37,7 +37,7 @@ def generate_all_image_queries(body_text_chunks):
 
     return all_queries
 
-def retrieve_pixabay_images(queries):
+def retrieve_pixabay_images(queries, dir_path):
     """
     Output: [{'keyword': <>, 'query':<>, 'image_path':<>} for each query in queries]
     """
@@ -67,7 +67,7 @@ def retrieve_pixabay_images(queries):
             data = response.json()
             
             # Save first image from the URL as a PNG file
-            output_path = f"test/image_files/{query['query']}.png"
+            output_path = f"{dir_path}/{query['query']}.png"
             if data['hits']:
                 image_url = data['hits'][0]['webformatURL']
                 image_data = requests.get(image_url).content

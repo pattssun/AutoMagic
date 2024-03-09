@@ -4,7 +4,7 @@ from pydub import AudioSegment
 from elevenlabs import set_api_key, generate, save, Voice, VoiceSettings
 from gtts import gTTS
 
-def text_to_speech(text_chunks, voices, output_filename):
+def text_to_speech(text_chunks, character_voice_ids, output_path):
     """
     Converts text to an audio file using the Eleven Labs API.
     """
@@ -14,10 +14,11 @@ def text_to_speech(text_chunks, voices, output_filename):
 
     output = []
     combined_audio = AudioSegment.empty()
-    total_duration = 0  
+    total_duration = 0
+
     for i, text_chunk in enumerate(text_chunks):
         # Alternate voices between chunks
-        voice = voices["rick"] if i % 2 == 0 else voices["morty"]
+        voice = character_voice_ids[0] if i % 2 == 0 else character_voice_ids[0]
         audio = generate(
             text=text_chunk, 
             voice=Voice(
@@ -25,11 +26,11 @@ def text_to_speech(text_chunks, voices, output_filename):
                 settings=VoiceSettings(stability=0.45, similarity_boost=0.75, style=0.05, use_speaker_boost=True)
             )
         )
-        audio_path = f"test/audio_files/{output_filename} ({i}).mp3"
-        save(audio, audio_path)
+        audio_chunk_path = f"{output_path} ({i}).mp3"
+        save(audio, audio_chunk_path)
 
         # Load the audio file as a pydub AudioSegment
-        audio_segment = AudioSegment.from_file(audio_path, format="mp3")
+        audio_segment = AudioSegment.from_file(audio_chunk_path, format="mp3")
 
         # Calculate the duration of the generated audio segment
         audio_duration = len(audio_segment)
@@ -43,11 +44,10 @@ def text_to_speech(text_chunks, voices, output_filename):
         total_duration += audio_duration  # Update the cumulative duration
         
         # Append the voice ID, audio path, and start and end times to the output list
-        output.append({"voice_id": voice, "audio_path": audio_path, "start": start_time, "end": end_time})
+        output.append({"voice_id": voice, "audio_path": audio_chunk_path, "start": start_time, "end": end_time})
 
     # Save the combined audio to a file
-    combined_audio_path = f"test/audio_files/{output_filename}"
-    combined_audio.export(combined_audio_path, format="mp3")
+    combined_audio.export(output_path, format="mp3")
 
     return output
 

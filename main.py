@@ -8,119 +8,163 @@ from datetime import datetime
 import os
 import re
 
-def assemble_video(project_name, text_path, background_video_path, voices):
+def assemble_video(today_date, accounts, background_video_path, text_path):
     """
-    Assembles the video from various components, using a pre-rendered image for the title and narrating the title text.
+    Assembles the video from various components.
     """
     # Time total execution of the function
     start_time = datetime.now()
 
+    # Get the current text file directory
+    current_text_file_dir = text_path.split('/')[2]
+
     # Load the text and split it into chunks
     text = read_text_file(text_path)
     text_chunks = read_text_file_by_line(text_path)
-    print("(1) text_chunks: Completed.\n")
-
-    # Generate audio chunks for the text chunks and combine them into a single audio file
-    audio_filename = f"{project_name}_normal.mp3"
-    # audio_chunks = text_to_speech(text_chunks, voices, output_filename=audio_filename)
-    audio_chunks = [{'voice_id': 'F7GmQe0BY7nlHiDzHStR', 'audio_path': 'dates/audio_files/0.mp3', 'start': 0.0, 'end': 4.859}, {'voice_id': '8ywemhKnE8RrczyytVz1', 'audio_path': 'dates/audio_files/1.mp3', 'start': 4.859, 'end': 6.296}, {'voice_id': 'F7GmQe0BY7nlHiDzHStR', 'audio_path': 'dates/audio_files/2.mp3', 'start': 6.296, 'end': 12.174}]
-    audio_full = AudioFileClip(f"dates/audio_files/{audio_filename}")
-    print("(2) audio_chunks and audio_full: Completed.\n")
-
-    # Calculate start and end times for each caption chunk
-    captions = generate_captions(f"dates/audio_files/{audio_filename}")
-    print("(3) captions: Completed.\n")
+    print(f"text_chunks for {current_text_file_dir}: Completed.\n")
 
     # Generate image queries for the text
     queries = generate_all_image_queries(text_chunks)
-    print("(4) queries: Completed.\n")
+    print(f"queries for {current_text_file_dir} - {account}: Completed.\n")
 
     # Retrieve images for the image queries
-    images = retrieve_pixabay_images(queries)
-    print("(5) images: Completed.\n")
+    images = retrieve_pixabay_images(queries, dir_path=f"dates/{today_date}/{current_text_file_dir}")
+    print(f"images for {current_text_file_dir} - {account}: Completed.\n")
 
-    # Initialize lists to hold all video clips
-    video_clips = []
+    # Generate audio chunks for the text chunks and combine them into a single audio file
+    for account in accounts:
+        characters = accounts[account]
+        character_voice_ids = []
+        character_image_paths = []
+        for i, character in enumerate(characters):
+            character_voice_ids.append(character["voice_id"])
+            character_image_paths.append(character["image_path"])
 
-    # Generate text clips for the captions
-    matched_images = []
-    for caption in captions:
-        caption_text = caption['text']
-        start_time = caption['start'] 
-        end_time = caption['end']
-        text_clip = create_text_clip_for_body(caption_text, start_time, end_time, clip_size=(1080, 1920))
-        video_clips.append(text_clip)
-        # Add timestamps to images that match the caption
-        for image in images:
-            # If the keyword is in the caption text and the image has a path, add it to the list
-            if image['keyword'] in caption_text and 'image_path' in image and image['image_path']:
-                matched_images.append({
-                    'start': start_time,
-                    'end': end_time,
-                    'text': caption_text,
-                    'image_path': image['image_path']
-                })
-                break  # Stop after finding the first matching image  
+        audio_path = f"dates/{today_date}/{current_text_file_dir}/{account}/audio.mp3"
+        audio_chunks = text_to_speech(text_chunks, character_voice_ids, output_path=audio_path)
+        audio_full = AudioFileClip(audio_path)
+        print(f"audio_chunks and audio_full for {current_text_file_dir} - {account}: Completed.\n")
 
-    # Generate image clips 
-    last_image_end = 0
-    for i, caption_image in enumerate(matched_images):
-        # Set the start time to 0 if it's the first item; otherwise, use the last image end
-        start_time = captions[0]['start'] if i == 0 else last_image_end
-        # If this isn't the last item, set the end time to the start of the next item; otherwise, use the caption end
-        end_time = matched_images[i + 1]['start'] if i + 1 < len(matched_images) else caption_image['end']
-        # If this is the last item, set the end time to the caption end
-        end_time = captions[-1]['end'] if i + 1 == len(matched_images) else end_time
-        # Update the last image end time
-        last_image_end = max(last_image_end, end_time)  
-        # Create the image clip
-        image_clip = create_image_clip_for_body(start_time, last_image_end, clip_size=(1080, 1920), image_path=caption_image['image_path'])
-        video_clips.append(image_clip)
+        # Calculate start and end times for each caption chunk
+        captions = generate_captions(audio_path)
+        print(f"captions for {current_text_file_dir} - {account}: Completed.\n")
 
-    # Ensure clips are sorted by start time as adding them out of order can cause issues
-    video_clips.sort(key=lambda clip: clip.start)
+        # Initialize lists to hold all video clips
+        video_clips = []
+        # Generate text clips for the captions
+        matched_images = []
+        for caption in captions:
+            caption_text = caption['text']
+            start_time = caption['start'] 
+            end_time = caption['end']
+            text_clip = create_text_clip_for_body(caption_text, start_time, end_time, clip_size=(1080, 1920))
+            video_clips.append(text_clip)
+            # Add timestamps to images that match the caption
+            for image in images:
+                # If the keyword is in the caption text and the image has a path, add it to the list
+                if image['keyword'] in caption_text and 'image_path' in image and image['image_path']:
+                    matched_images.append({
+                        'start': start_time,
+                        'end': end_time,
+                        'text': caption_text,
+                        'image_path': image['image_path']
+                    })
+                    break  # Stop after finding the first matching image  
 
-    # Add character image clips to the video
-    for i, audio_chunk in enumerate(audio_chunks):
-        # Alternate between Rick and Morty 
-        start_time = audio_chunk['start']
-        end_time = audio_chunk['end']
-        image_path = "resources/character_images/Rick2.png" if audio_chunk["voice_id"] == voices["rick"] else "resources/character_images/Morty2.png"
-        image_clip = ImageClip(image_path).set_duration(end_time - start_time).set_start(start_time).set_position(('center', 'bottom'))
-        video_clips.append(image_clip)
-    print("(6) video_clips: Completed.\n")
+        # Generate image clips 
+        last_image_end = 0
+        for i, caption_image in enumerate(matched_images):
+            # Set the start time to 0 if it's the first item; otherwise, use the last image end
+            start_time = captions[0]['start'] if i == 0 else last_image_end
+            # If this isn't the last item, set the end time to the start of the next item; otherwise, use the caption end
+            end_time = matched_images[i + 1]['start'] if i + 1 < len(matched_images) else caption_image['end']
+            # If this is the last item, set the end time to the caption end
+            end_time = captions[-1]['end'] if i + 1 == len(matched_images) else end_time
+            # Update the last image end time
+            last_image_end = max(last_image_end, end_time)  
+            # Create the image clip
+            image_clip = create_image_clip_for_body(start_time, last_image_end, clip_size=(1080, 1920), image_path=caption_image['image_path'])
+            video_clips.append(image_clip)
+        # Ensure clips are sorted by start time as adding them out of order can cause issues
+        video_clips.sort(key=lambda clip: clip.start)
 
-    # Load the background video and crop to a 9:16 aspect ratio
-    background_clip = crop_to_916(VideoFileClip(background_video_path))
+        # Add character image clips to the video
+        for i, audio_chunk in enumerate(audio_chunks):
+            # Alternate between Rick and Morty 
+            start_time = audio_chunk['start']
+            end_time = audio_chunk['end']
+            image_path = character_image_paths[0] if audio_chunk["voice_id"] == character_voice_ids[0] else character_image_paths[1]
+            image_clip = ImageClip(image_path).set_duration(end_time - start_time).set_start(start_time).set_position(('center', 'bottom'))
+            video_clips.append(image_clip)
+        print(f"video_clips for {current_text_file_dir} - {account}: Completed.\n")
 
-    # Select a random start time for the background video
-    if background_clip.duration > audio_full.duration:
-        max_start_time = background_clip.duration - audio_full.duration
-        start_time = random.uniform(0, max_start_time)
-        end_time = start_time + audio_full.duration
-        background_clip = background_clip.subclip(start_time, end_time)
-    else:
-        # If the background clip is shorter or equal to the content duration, return error
-        raise ValueError("Background video is shorter than the combined audio duration")
+        # Load the background video and crop to a 9:16 aspect ratio
+        background_clip = crop_to_916(VideoFileClip(background_video_path))
 
-    # Combine all clips into the final video
-    final_clip = CompositeVideoClip([background_clip] + video_clips, size=((1080, 1920))).set_audio(audio_full).set_duration(audio_full.duration)
-    final_clip.write_videofile(f"dates/{project_name}_final2.mp4", fps=60, audio_codec='aac')
+        # Select a random start time for the background video
+        if background_clip.duration > audio_full.duration:
+            max_start_time = background_clip.duration - audio_full.duration
+            start_time = random.uniform(0, max_start_time)
+            end_time = start_time + audio_full.duration
+            background_clip = background_clip.subclip(start_time, end_time)
+        else:
+            # If the background clip is shorter or equal to the content duration, return error
+            raise ValueError("Background video is shorter than the combined audio duration")
 
-    # Remove all files in dates/image_files
-    for file in os.listdir("dates/image_files"):
-        os.remove(f"dates/image_files/{file}")
+        # Combine all clips into the final video
+        final_clip = CompositeVideoClip([background_clip] + video_clips, size=((1080, 1920))).set_audio(audio_full).set_duration(audio_full.duration)
+        final_clip.write_videofile(f"dates/{today_date}/{current_text_file_dir}/output/{account}.mp4", fps=60, audio_codec='aac')
 
-    # Time total execution of the function
-    end_time = datetime.now()
-    print(f"Execution time: {end_time - start_time}")
+        # # Remove all files in image_files
+        # for file in os.listdir(f"dates/{today_date}/{current_text_file_dir}/image_files"):
+        #     os.remove(f"dates/{today_date}/{current_text_file_dir}/image_files/{file}")
+
+        # # Remove all files in audio_files
+        # for file in os.listdir(f"dates/{today_date}/{current_text_file_dir}/{account}"):
+        #     os.remove(f"dates/{today_date}/{current_text_file_dir}/{account}/{file}")
+
+        # Time total execution of the function
+        end_time = datetime.now()
+        print(f"Execution time: {end_time - start_time}")
 
 # Testing
 if __name__ == "__main__":
     today_date = datetime.today().strftime('%Y-%m-%d')
-    project_name = "tiktok_sample"
-    text_path = f"dates/text_files/{project_name}.txt"
-    characters = ["rick", "morty"]
+    accounts = {
+        "account1": {
+            "ricky": {
+                "voice_id": "F7GmQe0BY7nlHiDzHStR",
+                "image_path": "resources/account_images/Rick2.png"
+            },
+            "morty": {
+                "voice_id": "8ywemhKnE8RrczyytVz1",
+                "image_path": "resources/account_images/Morty2.png"
+            }
+        },
+        "account2": {
+            "spongebob": {
+                "voice_id": "N/A",
+                "image_path": "N/A"
+            },
+            "patrick": {
+                "voice_id": "N/A",
+                "image_path": "N/A"
+            }
+        },
+        "account3": {
+            "peter": {
+                "voice_id": "N/A",
+                "image_path": "N/A"
+            },
+            "stewie": {
+                "voice_id": "N/A",
+                "image_path": "N/A"
+            }
+        }
+    }
     background_video_path = "resources/background_videos/minecraft.mp4"
-    voices = {"rick":"F7GmQe0BY7nlHiDzHStR", "morty":"8ywemhKnE8RrczyytVz1"}
-    assemble_video(project_name, text_path, background_video_path, voices)
+    for dir in os.listdir(f"dates/{today_date}"):
+        for file in os.listdir(f"dates/{today_date}/{dir}"):
+            if file.endswith(".txt"):
+                text_path = f"dates/{today_date}/{dir}/{file}"
+                assemble_video(today_date, accounts, background_video_path, text_path)
