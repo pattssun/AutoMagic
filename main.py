@@ -137,11 +137,11 @@ if __name__ == "__main__":
         "account1": {
             "ricky": {
                 "voice_id": "F7GmQe0BY7nlHiDzHStR",
-                "image_path": "resources/account_images/Rick2.png"
+                "image_path": "resources/account_images/rick.png"
             },
             "morty": {
                 "voice_id": "8ywemhKnE8RrczyytVz1",
-                "image_path": "resources/account_images/Morty2.png"
+                "image_path": "resources/account_images/morty.png"
             }
         },
         "account2": {
