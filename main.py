@@ -133,27 +133,39 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
 # Testing
 if __name__ == "__main__":
     today_date = datetime.today().strftime('%Y-%m-%d')
+    # accounts = {
+    #     "account1": {
+    #         "ricky": {
+    #             "voice_id": "F7GmQe0BY7nlHiDzHStR",
+    #             "image_path": "resources/character_images/rick.png"
+    #         },
+    #         "morty": {
+    #             "voice_id": "8ywemhKnE8RrczyytVz1",
+    #             "image_path": "resources/character_images/morty.png"
+    #         }
+    #     },
+    #     "account2": {
+    #         "spongebob": {
+    #             "voice_id": "k2kyIOkVvjmBBY9jw4PR",
+    #             "image_path": "resources/character_images/spongebob.png"
+    #         },
+    #         "patrick": {
+    #             "voice_id": "MIrTQN3cNhi4BPBOIEMH",
+    #             "image_path": "resources/character_images/patrick.png"
+    #         }
+    #     },
+    #     "account3": {
+    #         "peter": {
+    #             "voice_id": "ZxjQmbC520BZfHkeKd1l",
+    #             "image_path": "resources/character_images/peter.png"
+    #         },
+    #         "stewie": {
+    #             "voice_id": "jYLjZign3GxODGd9N9AQ",
+    #             "image_path": "resources/character_images/stewie.png"
+    #         }
+    #     }
+    # }
     accounts = {
-        "account1": {
-            "ricky": {
-                "voice_id": "F7GmQe0BY7nlHiDzHStR",
-                "image_path": "resources/character_images/rick.png"
-            },
-            "morty": {
-                "voice_id": "8ywemhKnE8RrczyytVz1",
-                "image_path": "resources/character_images/morty.png"
-            }
-        },
-        "account2": {
-            "spongebob": {
-                "voice_id": "k2kyIOkVvjmBBY9jw4PR",
-                "image_path": "resources/character_images/spongebob.png"
-            },
-            "patrick": {
-                "voice_id": "MIrTQN3cNhi4BPBOIEMH",
-                "image_path": "resources/character_images/patrick.png"
-            }
-        },
         "account3": {
             "peter": {
                 "voice_id": "ZxjQmbC520BZfHkeKd1l",
@@ -170,4 +182,6 @@ if __name__ == "__main__":
         for file in os.listdir(f"projects/{today_date}/{dir}"):
             if file.endswith(".txt"):
                 text_path = f"projects/{today_date}/{dir}/{file}"
+                print(f"Video assembly for {today_date}/{dir}: Started.")
                 assemble_video(today_date, accounts, background_video_path, text_path)
+                print(f"Video assembly for {today_date}/{dir}: Completed.\n")

@@ -69,13 +69,7 @@ def transcribe_mp3(audio_path, output_path):
 
 # Example usage
 if __name__ == "__main__":
-    # # Test generate_captions
-    # audio_path = "test/tiktok_faster.mp3"
-    # captions = generate_captions(audio_path)
-    # for caption in captions:
-    #     print(caption['text'])
-
-    # Test read_text_file_by_line
-    body_text_path = "test/tiktok.txt"
-    body_text_chunks = read_text_file_by_line(body_text_path)
-    print(body_text_chunks)
+    # Transcribe an audio file
+    audio_path = "projects/2024-03-24/3/Snaptik.app_7331375285587217707.mp3"
+    output_path = "projects/2024-03-24/3/text_file.txt"
+    transcribe_mp3(audio_path, output_path)
