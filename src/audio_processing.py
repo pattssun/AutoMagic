@@ -18,7 +18,7 @@ def text_to_speech(text_chunks, character_voice_ids, output_path):
 
     for i, text_chunk in enumerate(text_chunks):
         # Alternate voices between chunks
-        voice = character_voice_ids[0] if i % 2 == 0 else character_voice_ids[0]
+        voice = character_voice_ids[0] if i % 2 == 0 else character_voice_ids[1]
         audio = generate(
             text=text_chunk, 
             voice=Voice(

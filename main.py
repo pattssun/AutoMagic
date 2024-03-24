@@ -28,20 +28,20 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
 
     # Generate image queries for the text
     queries = generate_all_image_queries(text_chunks)
-    print(f"queries for {current_text_file_dir} - {account}: Completed.\n")
+    print(f"queries for {current_text_file_dir}: Completed.\n")
 
     # Retrieve images for the image queries
-    images = retrieve_pixabay_images(queries, dir_path=f"projects/{today_date}/{current_text_file_dir}")
-    print(f"images for {current_text_file_dir} - {account}: Completed.\n")
+    images = retrieve_pixabay_images(queries, dir_path=f"projects/{today_date}/{current_text_file_dir}/image_files")
+    print(f"images for {current_text_file_dir}: Completed.\n")
 
     # Generate audio chunks for the text chunks and combine them into a single audio file
-    for account in accounts:
+    character_voice_ids = []
+    character_image_paths = []
+    for i, account in enumerate(accounts):
         characters = accounts[account]
-        character_voice_ids = []
-        character_image_paths = []
         for i, character in enumerate(characters):
-            character_voice_ids.append(character["voice_id"])
-            character_image_paths.append(character["image_path"])
+            character_voice_ids.append(accounts[account][character]["voice_id"])
+            character_image_paths.append(accounts[account][character]["image_path"])
 
         audio_path = f"projects/{today_date}/{current_text_file_dir}/{account}/audio.mp3"
         audio_chunks = text_to_speech(text_chunks, character_voice_ids, output_path=audio_path)
@@ -128,44 +128,33 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
 
         # Time total execution of the function
         end_time = datetime.now()
-        print(f"Execution time: {end_time - start_time}")
+        execution_time = end_time - start_time
+        print(f"Execution time for {current_text_file_dir} - {account}: {execution_time}")
 
 # Testing
 if __name__ == "__main__":
     today_date = datetime.today().strftime('%Y-%m-%d')
-    # accounts = {
-    #     "account1": {
-    #         "ricky": {
-    #             "voice_id": "F7GmQe0BY7nlHiDzHStR",
-    #             "image_path": "resources/character_images/rick.png"
-    #         },
-    #         "morty": {
-    #             "voice_id": "8ywemhKnE8RrczyytVz1",
-    #             "image_path": "resources/character_images/morty.png"
-    #         }
-    #     },
-    #     "account2": {
-    #         "spongebob": {
-    #             "voice_id": "k2kyIOkVvjmBBY9jw4PR",
-    #             "image_path": "resources/character_images/spongebob.png"
-    #         },
-    #         "patrick": {
-    #             "voice_id": "MIrTQN3cNhi4BPBOIEMH",
-    #             "image_path": "resources/character_images/patrick.png"
-    #         }
-    #     },
-    #     "account3": {
-    #         "peter": {
-    #             "voice_id": "ZxjQmbC520BZfHkeKd1l",
-    #             "image_path": "resources/character_images/peter.png"
-    #         },
-    #         "stewie": {
-    #             "voice_id": "jYLjZign3GxODGd9N9AQ",
-    #             "image_path": "resources/character_images/stewie.png"
-    #         }
-    #     }
-    # }
     accounts = {
+        "account1": {
+            "ricky": {
+                "voice_id": "F7GmQe0BY7nlHiDzHStR",
+                "image_path": "resources/character_images/rick.png"
+            },
+            "morty": {
+                "voice_id": "8ywemhKnE8RrczyytVz1",
+                "image_path": "resources/character_images/morty.png"
+            }
+        },
+        "account2": {
+            "spongebob": {
+                "voice_id": "k2kyIOkVvjmBBY9jw4PR",
+                "image_path": "resources/character_images/spongebob.png"
+            },
+            "patrick": {
+                "voice_id": "MIrTQN3cNhi4BPBOIEMH",
+                "image_path": "resources/character_images/patrick.png"
+            }
+        },
         "account3": {
             "peter": {
                 "voice_id": "ZxjQmbC520BZfHkeKd1l",
@@ -185,3 +174,4 @@ if __name__ == "__main__":
                 print(f"Video assembly for {today_date}/{dir}: Started.")
                 assemble_video(today_date, accounts, background_video_path, text_path)
                 print(f"Video assembly for {today_date}/{dir}: Completed.\n")
+
