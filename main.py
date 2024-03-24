@@ -137,31 +137,31 @@ if __name__ == "__main__":
         "account1": {
             "ricky": {
                 "voice_id": "F7GmQe0BY7nlHiDzHStR",
-                "image_path": "resources/account_images/rick.png"
+                "image_path": "resources/character_images/rick.png"
             },
             "morty": {
                 "voice_id": "8ywemhKnE8RrczyytVz1",
-                "image_path": "resources/account_images/morty.png"
+                "image_path": "resources/character_images/morty.png"
             }
         },
         "account2": {
             "spongebob": {
                 "voice_id": "N/A",
-                "image_path": "N/A"
+                "image_path": "resources/character_images/spongebob.png"
             },
             "patrick": {
                 "voice_id": "N/A",
-                "image_path": "N/A"
+                "image_path": "resources/character_images/patrick.png"
             }
         },
         "account3": {
             "peter": {
-                "voice_id": "N/A",
-                "image_path": "N/A"
+                "voice_id": "ZxjQmbC520BZfHkeKd1l",
+                "image_path": "resources/character_images/peter.png"
             },
             "stewie": {
-                "voice_id": "N/A",
-                "image_path": "N/A"
+                "voice_id": "jYLjZign3GxODGd9N9AQ",
+                "image_path": "resources/character_images/stewie.png"
             }
         }
     }
