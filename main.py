@@ -146,11 +146,11 @@ if __name__ == "__main__":
         },
         "account2": {
             "spongebob": {
-                "voice_id": "N/A",
+                "voice_id": "k2kyIOkVvjmBBY9jw4PR",
                 "image_path": "resources/character_images/spongebob.png"
             },
             "patrick": {
-                "voice_id": "N/A",
+                "voice_id": "MIrTQN3cNhi4BPBOIEMH",
                 "image_path": "resources/character_images/patrick.png"
             }
         },
