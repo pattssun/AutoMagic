@@ -119,19 +119,19 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
         final_clip = CompositeVideoClip([background_clip] + video_clips, size=((1080, 1920))).set_audio(audio_full).set_duration(audio_full.duration)
         final_clip.write_videofile(f"projects/{today_date}/{current_text_file_dir}/output/{account}.mp4", fps=60, audio_codec='aac')
 
-        # # Remove all files in image_files
-        # for file in os.listdir(f"projects/{today_date}/{current_text_file_dir}/image_files"):
-        #     os.remove(f"projects/{today_date}/{current_text_file_dir}/image_files/{file}")
-
         # # Remove all files in audio_files
         # for file in os.listdir(f"projects/{today_date}/{current_text_file_dir}/{account}"):
         #     os.remove(f"projects/{today_date}/{current_text_file_dir}/{account}/{file}")
 
-        # # Time total execution of the function
-        # end_time = datetime.now().strftime("%H:%M:%S")
-        # end_time = datetime.strptime(end_time, "%H:%M:%S")
-        # execution_time = end_time - start_time
-        # print(f"Execution time for {current_text_file_dir} - {account}: {execution_time}")
+    # # Remove all files in image_files
+    # for file in os.listdir(f"projects/{today_date}/{current_text_file_dir}/image_files"):
+    #     os.remove(f"projects/{today_date}/{current_text_file_dir}/image_files/{file}")
+
+    # # Time total execution of the function
+    # end_time = datetime.now().strftime("%H:%M:%S")
+    # end_time = datetime.strptime(end_time, "%H:%M:%S")
+    # execution_time = end_time - start_time
+    # print(f"Execution time for {current_text_file_dir} - {account}: {execution_time}")
 
 # Testing
 if __name__ == "__main__":
