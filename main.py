@@ -12,8 +12,9 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
     """
     Assembles the video from various components.
     """
-    # Time total execution of the function
-    start_time = datetime.now()
+    # # Time total execution of the function
+    # start_time = datetime.now().strftime("%H:%M:%S")
+    # start_time = datetime.strptime(start_time, "%H:%M:%S")
 
     # Get the current text file directory
     current_text_file_dir = text_path.split('/')[2]
@@ -35,10 +36,10 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
     print(f"images for {current_text_file_dir}: Completed.\n")
 
     # Generate audio chunks for the text chunks and combine them into a single audio file
-    character_voice_ids = []
-    character_image_paths = []
     for i, account in enumerate(accounts):
         characters = accounts[account]
+        character_voice_ids = []
+        character_image_paths = []
         for i, character in enumerate(characters):
             character_voice_ids.append(accounts[account][character]["voice_id"])
             character_image_paths.append(accounts[account][character]["image_path"])
@@ -126,10 +127,11 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
         # for file in os.listdir(f"projects/{today_date}/{current_text_file_dir}/{account}"):
         #     os.remove(f"projects/{today_date}/{current_text_file_dir}/{account}/{file}")
 
-        # Time total execution of the function
-        end_time = datetime.now()
-        execution_time = end_time - start_time
-        print(f"Execution time for {current_text_file_dir} - {account}: {execution_time}")
+        # # Time total execution of the function
+        # end_time = datetime.now().strftime("%H:%M:%S")
+        # end_time = datetime.strptime(end_time, "%H:%M:%S")
+        # execution_time = end_time - start_time
+        # print(f"Execution time for {current_text_file_dir} - {account}: {execution_time}")
 
 # Testing
 if __name__ == "__main__":
@@ -168,10 +170,11 @@ if __name__ == "__main__":
     }
     background_video_path = "resources/background_videos/minecraft.mp4"
     for dir in os.listdir(f"projects/{today_date}"):
+        if not re.match(r'^[1-3]$', dir):
+            continue
         for file in os.listdir(f"projects/{today_date}/{dir}"):
             if file.endswith(".txt"):
                 text_path = f"projects/{today_date}/{dir}/{file}"
                 print(f"Video assembly for {today_date}/{dir}: Started.")
                 assemble_video(today_date, accounts, background_video_path, text_path)
                 print(f"Video assembly for {today_date}/{dir}: Completed.\n")
-
