@@ -107,7 +107,7 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
 
         # Combine all clips into the final video
         final_clip = CompositeVideoClip([background_clip] + video_clips, size=((1080, 1920))).set_audio(audio_full).set_duration(audio_full.duration)
-        final_clip.write_videofile(f"projects/{today_date}/{current_text_file_dir}/output/{account}.mp4", fps=60, audio_codec='aac')
+        final_clip.write_videofile(f"projects/{today_date}/output/({current_text_file_dir}) {account}.mp4", fps=60, audio_codec='aac')
 
         # Remove all files in audio_files
         for file in os.listdir(f"projects/{today_date}/{current_text_file_dir}/{account}"):
