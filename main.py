@@ -12,9 +12,8 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
     """
     Assembles the video from various components.
     """
-    # # Time total execution of the function
-    # start_time = datetime.now().strftime("%H:%M:%S")
-    # start_time = datetime.strptime(start_time, "%H:%M:%S")
+    # Time total execution of the function
+    start_time = datetime.now()
 
     # Get the current text file directory
     current_text_file_dir = text_path.split('/')[2]
@@ -127,11 +126,10 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
     # for file in os.listdir(f"projects/{today_date}/{current_text_file_dir}/image_files"):
     #     os.remove(f"projects/{today_date}/{current_text_file_dir}/image_files/{file}")
 
-    # # Time total execution of the function
-    # end_time = datetime.now().strftime("%H:%M:%S")
-    # end_time = datetime.strptime(end_time, "%H:%M:%S")
-    # execution_time = end_time - start_time
-    # print(f"Execution time for {current_text_file_dir} - {account}: {execution_time}")
+    # Time total execution of the function
+    end_time = datetime.now()
+    execution_time = end_time - start_time
+    print(f"Execution time for {current_text_file_dir} - {account}: {execution_time}")
 
 # Testing
 if __name__ == "__main__":
@@ -178,3 +176,4 @@ if __name__ == "__main__":
                 print(f"Video assembly for {today_date}/{dir}: Started.")
                 assemble_video(today_date, accounts, background_video_path, text_path)
                 print(f"Video assembly for {today_date}/{dir}: Completed.\n")
+
