@@ -12,9 +12,6 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
     """
     Assembles the video from various components.
     """
-    # Time total execution of the function
-    start_time = datetime.now()
-
     # Get the current text file directory
     current_text_file_dir = text_path.split('/')[2]
     # Verify that current_text_file_dir is a number between 1-3
@@ -24,15 +21,12 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
     # Load the text and split it into chunks
     text = read_text_file(text_path)
     text_chunks = read_text_file_by_line(text_path)
-    print(f"text_chunks for {current_text_file_dir}: Completed.\n")
 
     # Generate image queries for the text
     queries = generate_all_image_queries(text_chunks)
-    print(f"queries for {current_text_file_dir}: Completed.\n")
 
     # Retrieve images for the image queries
     images = retrieve_pixabay_images(queries, dir_path=f"projects/{today_date}/{current_text_file_dir}/image_files")
-    print(f"images for {current_text_file_dir}: Completed.\n")
 
     # Generate audio chunks for the text chunks and combine them into a single audio file
     for i, account in enumerate(accounts):
@@ -46,11 +40,9 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
         audio_path = f"projects/{today_date}/{current_text_file_dir}/{account}/audio.mp3"
         audio_chunks = text_to_speech(text_chunks, character_voice_ids, output_path=audio_path)
         audio_full = AudioFileClip(audio_path)
-        print(f"audio_chunks and audio_full for {current_text_file_dir} - {account}: Completed.\n")
 
         # Calculate start and end times for each caption chunk
         captions = generate_captions(audio_path)
-        print(f"captions for {current_text_file_dir} - {account}: Completed.\n")
 
         # Initialize lists to hold all video clips
         video_clips = []
@@ -99,7 +91,6 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
             image_path = character_image_paths[0] if audio_chunk["voice_id"] == character_voice_ids[0] else character_image_paths[1]
             image_clip = ImageClip(image_path).set_duration(end_time - start_time).set_start(start_time).set_position(('center', 'bottom'))
             video_clips.append(image_clip)
-        print(f"video_clips for {current_text_file_dir} - {account}: Completed.\n")
 
         # Load the background video and crop to a 9:16 aspect ratio
         background_clip = crop_to_916(VideoFileClip(background_video_path))
@@ -126,14 +117,11 @@ def assemble_video(today_date, accounts, background_video_path, text_path):
     for file in os.listdir(f"projects/{today_date}/{current_text_file_dir}/image_files"):
         os.remove(f"projects/{today_date}/{current_text_file_dir}/image_files/{file}")
 
-    # Time total execution of the function
-    end_time = datetime.now()
-    execution_time = end_time - start_time
-    print(f"Execution time for {current_text_file_dir} - {account}: {execution_time}")
-
 # Testing
 if __name__ == "__main__":
+    start_time = datetime.now()
     today_date = datetime.today().strftime('%Y-%m-%d')
+
     accounts = {
         "account1": {
             "ricky": {
@@ -173,7 +161,11 @@ if __name__ == "__main__":
         for file in os.listdir(f"projects/{today_date}/{dir}"):
             if file.endswith(".txt"):
                 text_path = f"projects/{today_date}/{dir}/{file}"
-                print(f"Video assembly for {today_date}/{dir}: Started.")
+                print(f"\nVideo assembly for {today_date}/{dir}: Started.\n")
                 assemble_video(today_date, accounts, background_video_path, text_path)
-                print(f"Video assembly for {today_date}/{dir}: Completed.\n")
+                print(f"\nVideo assembly for {today_date}/{dir}: Completed.\n")
+
+    end_time = datetime.now()
+    execution_time = end_time - start_time
+    print(f"\nExecution time: {execution_time}.\n")
 
